@@ -11,12 +11,11 @@ import com.github.bhlangonijr.chesslib.Square;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.example.javachess.Utils.ChessMoveConverter;
 
 public class Stockfish {
+
     private Process process1; // Per la valutazione della posizione
     private Process process2; // Per il calcolo delle migliori mosse
     private BufferedReader reader1;
@@ -24,6 +23,9 @@ public class Stockfish {
     private OutputStreamWriter writer1;
     private OutputStreamWriter writer2;
     private ChessMoveConverter ChessMoveConverter = new ChessMoveConverter();
+
+    // Aggiungi questa variabile per il livello di abilità
+    private int skillLevel;
 
     public Stockfish(String stockfishPath) {
         try {
@@ -62,13 +64,46 @@ public class Stockfish {
         }
     }
 
+    // Funzione per impostare il livello di abilità
+    public void setSkillLevel(int skillLevel) {
+        this.skillLevel = skillLevel;
+        try {
+            writer1.write("setoption name Skill Level value " + skillLevel + "\n");
+            writer1.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Funzione per ottenere la migliore mossa a seconda del livello di abilità
+    public String getBestMove(String fen) {
+        try {
+            writer1.write("position fen " + fen + "\n");
+            writer1.flush();
+
+            writer1.write("go depth 18\n");
+            writer1.flush();
+
+            String line;
+            while ((line = reader1.readLine()) != null) {
+                if (line.startsWith("bestmove")) {
+                    return line.split(" ")[1];
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Funzione per valutare la posizione
     public void evaluatePosition(String fen, Label evaluationLabel) {
         new Thread(() -> {
             try {
                 writer1.write("position fen " + fen + "\n");
                 writer1.flush();
 
-                writer1.write("go depth 18\n");
+                writer1.write("go depth 20\n");
                 writer1.flush();
 
                 String line;
@@ -102,6 +137,7 @@ public class Stockfish {
         }).start();
     }
 
+    // Funzione per ottenere le prime tre mosse migliori
     public void getTopThreeMoves(String fen, Label move1Label, Label move2Label, Label move3Label) {
         new Thread(() -> {
             try {
@@ -117,7 +153,6 @@ public class Stockfish {
                 String line;
                 String[] topMoves = new String[3];
                 String[] moveEvaluations = new String[3];
-                int[] seenMoves = {0};
 
                 while ((line = reader2.readLine()) != null) {
                     if (line.startsWith("info depth ")) {
@@ -125,7 +160,7 @@ public class Stockfish {
                         int multiPVIndex = Arrays.asList(parts).indexOf("multipv");
                         if (multiPVIndex != -1) {
                             int pv = Integer.parseInt(parts[multiPVIndex + 1]) - 1;
-                            if (pv < 3) { // Ci sono al massimo 3 varianti
+                            if (pv < 3) {
                                 int moveIndex = Arrays.asList(parts).indexOf("pv") + 1;
                                 int scoreIndex = Arrays.asList(parts).indexOf("score");
                                 String moveInUci = parts[moveIndex];
@@ -147,22 +182,22 @@ public class Stockfish {
 
                                 topMoves[pv] = algebraicMove;
                                 moveEvaluations[pv] = moveEvaluation;
-                                seenMoves[0]++;
+
+                                // Aggiorna la label corrispondente con la nuova mossa e valutazione
+                                int finalPv = pv;
+                                Platform.runLater(() -> {
+                                    switch (finalPv) {
+                                        case 0 -> move1Label.setText(topMoves[0] + " (" + moveEvaluations[0] + ")");
+                                        case 1 -> move2Label.setText(topMoves[1] + " (" + moveEvaluations[1] + ")");
+                                        case 2 -> move3Label.setText(topMoves[2] + " (" + moveEvaluations[2] + ")");
+                                    }
+                                });
                             }
                         }
-                    } else if (line.startsWith("bestmove") || seenMoves[0] == 3) {
+                    } else if (line.startsWith("bestmove")) {
                         break;
                     }
                 }
-
-                Platform.runLater(() -> {
-                    if (seenMoves[0] > 0 && topMoves[0] != null) move1Label.setText(topMoves[0] + " (" + moveEvaluations[0] + ")");
-                    if (seenMoves[0] > 1 && topMoves[1] != null) move2Label.setText(topMoves[1] + " (" + moveEvaluations[1] + ")");
-                    else move2Label.setText("");
-                    if (seenMoves[0] > 2 && topMoves[2] != null) move3Label.setText(topMoves[2] + " (" + moveEvaluations[2] + ")");
-                    else move3Label.setText("");
-                });
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -170,6 +205,7 @@ public class Stockfish {
     }
 
 
+    // Funzione per chiudere Stockfish
     public void close() {
         try {
             if (process1 != null) {

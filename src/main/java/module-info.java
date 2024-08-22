@@ -12,6 +12,7 @@ module org.example.javachess {
     exports org.example.javachess.Oggetti;
     opens org.example.javachess.Oggetti to javafx.fxml;
     opens org.example.javachess.Controllers to javafx.fxml;
-
+    requires javafx.web;
+    requires org.json;
     requires chesslib;
 }
