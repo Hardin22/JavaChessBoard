@@ -27,8 +27,8 @@ public class WebViewExample {
         webEngine.documentProperty().addListener((obs, oldDoc, newDoc) -> {
             if (newDoc != null && newDoc.getDocumentURI().contains("lichess.org/login")) {
                 webEngine.executeScript(
-                        "document.querySelector('input[name=username]').value = 'bro-ure-trying-too-hard';" +
-                                "document.querySelector('input[name=password]').value = 'heah-u-wish';"
+                        "document.querySelector('input[name=username]').value = 'ohNoMyHardin';" +
+                                "document.querySelector('input[name=password]').value = 'vypcid-hyMby6-zadfyc';"
                 );
             }
         });

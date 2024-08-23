@@ -21,6 +21,7 @@ public class ChessTimer {
         this.blackTime = gameDuration;
         this.increment = increment;
     }
+
     public void initializetimer() {
         updateLabel(whiteLabel, whiteTime);
         updateLabel(blackLabel, blackTime);
@@ -28,6 +29,7 @@ public class ChessTimer {
 
     public void startWhiteTimer() {
         stopBlackTimer();
+        Platform.runLater(() -> whiteLabel.getStyleClass().add("stopwatch-active"));
         whiteTimer = new Timer();
         whiteTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -44,6 +46,7 @@ public class ChessTimer {
 
     public void startBlackTimer() {
         stopWhiteTimer();
+        Platform.runLater(() -> blackLabel.getStyleClass().add("stopwatch-active"));
         blackTimer = new Timer();
         blackTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -60,20 +63,19 @@ public class ChessTimer {
 
     public void addIncrementToWhite() {
         whiteTime += increment;
-        updateLabel(whiteLabel, whiteTime); // Aggiorna il timer sulla UI
-        System.out.println("whiteTime: " + whiteTime);
+        updateLabel(whiteLabel, whiteTime);
     }
 
     public void addIncrementToBlack() {
         blackTime += increment;
-        updateLabel(blackLabel, blackTime); // Aggiorna il timer sulla UI
-        System.out.println("blackTime: " + blackTime);
+        updateLabel(blackLabel, blackTime);
     }
 
     public void stopWhiteTimer() {
         if (whiteTimer != null) {
             whiteTimer.cancel();
             whiteTimer = null;
+            Platform.runLater(() -> whiteLabel.getStyleClass().remove("stopwatch-active"));
         }
     }
 
@@ -81,6 +83,7 @@ public class ChessTimer {
         if (blackTimer != null) {
             blackTimer.cancel();
             blackTimer = null;
+            Platform.runLater(() -> blackLabel.getStyleClass().remove("stopwatch-active"));
         }
     }
 
@@ -89,5 +92,4 @@ public class ChessTimer {
         int seconds = time % 60;
         label.setText(String.format("%02d:%02d", minutes, seconds));
     }
-
 }

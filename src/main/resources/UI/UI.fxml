@@ -5,99 +5,248 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.Pane?>
-<StackPane fx:id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1183.0" prefWidth="670.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javachess.Controllers.GlobalController">
+<StackPane fx:id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1183.0" prefWidth="670.0" style="-fx-background-color: #1E1E1E;" stylesheets="@../Styles/Style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javachess.Controllers.GlobalController">
    <children>
-      <VBox fx:id="home" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1186.0" prefWidth="670.0" spacing="40.0" StackPane.alignment="CENTER">
+      <VBox fx:id="home" alignment="TOP_CENTER" prefHeight="1186.0" prefWidth="670.0" spacing="40.0" visible="false">
          <children>
-            <Button mnemonicParsing="false" onAction="#showPvPpage" prefHeight="76.0" prefWidth="417.0" text="Player vs Player" />
-            <Button layoutX="137.0" layoutY="565.0" mnemonicParsing="false" onAction="#showpvc" prefHeight="76.0" prefWidth="417.0" text="Player vs Computer" />
-            <Button layoutX="137.0" layoutY="565.0" mnemonicParsing="false" onAction="#startLichess" prefHeight="76.0" prefWidth="417.0" text="Lichess" />
-         </children>
-      </VBox>
-      <VBox fx:id="pvcsetup" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" visible="false" StackPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" onAction="#backtohome" text="indietro" />
-            <Label text="player vs computer">
-               <font>
-                  <Font size="37.0" />
-               </font>
-            </Label>
-            <Label text="difficoltà">
-               <font>
-                  <Font size="19.0" />
-               </font>
-            </Label>
-            <Slider maxWidth="400.0" prefWidth="400.0" />
-            <Label text="Gioca con:" />
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
-               <children>
-                  <Button mnemonicParsing="false" text="bianco" />
-                  <Button mnemonicParsing="false" text="nero" />
-                  <Button mnemonicParsing="false" text="random" />
-               </children>
-            </HBox>
-            <Button onAction="#iniziaPvC" mnemonicParsing="false" text="inizia" />
-         </children>
-      </VBox>
-      <VBox fx:id="pvp" alignment="CENTER" prefHeight="1183.0" prefWidth="611.0" spacing="40.0" visible="false" StackPane.alignment="BOTTOM_RIGHT">
-         <children>
-            <Label text="Player vs Player">
-               <font>
-                  <Font size="59.0" />
-               </font>
-            </Label>
-            <Label text="durata:" />
-            <Slider maxWidth="400.0" prefHeight="20.0" prefWidth="709.0" />
-            <Label layoutX="326.0" layoutY="533.0" text="incremento:" />
-            <Slider layoutX="145.0" layoutY="10.0" maxWidth="400.0" prefHeight="20.0" prefWidth="400.0" />
-            <Button mnemonicParsing="false" onAction="#iniziaPvP" prefHeight="44.0" prefWidth="208.0" text="Inizia">
-               <VBox.margin>
-                  <Insets bottom="200.0" />
-               </VBox.margin>
+            <ImageView fx:id="boardlogo" fitHeight="209.0" fitWidth="533.0" pickOnBounds="true" preserveRatio="true" />
+            <Button mnemonicParsing="false" onAction="#showpvc" prefHeight="108.0" prefWidth="493.0">
+               <graphic>
+                  <HBox prefHeight="56.0" prefWidth="413.0" spacing="20.0">
+                     <children>
+                        <ImageView fx:id="robotButtonImageView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" spacing="10.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="164.0" text="Bot Match" textFill="WHITE">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="label2" text="Gioca contro un chess bot" textFill="#9a9a9a" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </graphic>
             </Button>
-            <Button mnemonicParsing="false" onAction="#backtohome" prefHeight="44.0" prefWidth="208.0" text="indietro" />
+            <Button layoutX="99.0" layoutY="339.0" mnemonicParsing="false" onAction="#startLichess" prefHeight="108.0" prefWidth="493.0">
+               <graphic>
+                  <HBox prefHeight="56.0" prefWidth="413.0" spacing="20.0">
+                     <children>
+                        <ImageView fx:id="onlineButtonImageView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" spacing="10.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="164.0" text="Partita Online" textFill="WHITE">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="label2" text="Gioca contro altri giocatori online, nelle tue piattaforme preferite" textFill="#9a9a9a" wrapText="true" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                  </HBox>
+               </graphic>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </Button>
+            <Button layoutX="99.0" layoutY="339.0" mnemonicParsing="false" onAction="#showPvPpage" prefHeight="108.0" prefWidth="493.0">
+               <graphic>
+                  <HBox prefHeight="56.0" prefWidth="413.0" spacing="20.0">
+                     <children>
+                        <ImageView fx:id="friendButtonImageView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" spacing="10.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="164.0" text="Con un amico" textFill="WHITE">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="label2" text="Gioca con un amico over the board" textFill="#9a9a9a" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
          </children>
       </VBox>
-      <VBox fx:id="pvpgame" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" StackPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" onAction="#backtopvp" text="indietro" />
-            <Label fx:id="blackLabel" alignment="CENTER" prefHeight="76.0" prefWidth="231.0" style="-fx-rotate: 180; -fx-background-color: lightgrey; -fx-background-radius: 20 20 20 20;" text="10:00" textAlignment="JUSTIFY">
-               <font>
-                  <Font size="32.0" />
-               </font>
-               <padding>
-                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-               </padding>
-            </Label>
-            <TextField fx:id="moveInputField" onAction="#handleMoveInput"/>
-            <Label fx:id="evaluationLabel" />
-            <Label fx:id="move1Label" layoutX="10.0" layoutY="36.0" />
-            <Label fx:id="move2Label" layoutX="10.0" layoutY="53.0" />
-            <Label fx:id="move3Label" layoutX="10.0" layoutY="70.0" />
+      <BorderPane fx:id="pvcsetup" prefHeight="200.0" prefWidth="200.0">
+         <center>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label styleClass="Headers" text="player vs computer">
+                     <font>
+                        <Font size="37.0" />
+                     </font>
+                  </Label>
+                  <Label text="difficoltà">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <Slider maxWidth="400.0" prefWidth="400.0" />
+                  <Label text="Gioca con:" />
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                     <children>
+                        <VBox fx:id="whiteVbox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="choiceactive">
+                           <children>
+                              <ToggleButton fx:id="whiteButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="colorGroup" />
+                                 </toggleGroup>
+                                 <graphic>
+                                    <ImageView fx:id="white" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                              </ToggleButton>
+                              <Label text="Bianco" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="randomVbox" alignment="CENTER" prefHeight="129.0" prefWidth="121.0" styleClass="choiceactive">
+                           <children>
+                              <ToggleButton fx:id="randomButton" mnemonicParsing="false" selected="true" style="-fx-background-color: transparent;" toggleGroup="$colorGroup">
+                                 <graphic>
+                                    <ImageView fx:id="random" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                              </ToggleButton>
+                              <Label text="Random" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="blackVbox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="choiceactive">
+                           <children>
+                              <ToggleButton fx:id="blackButton" mnemonicParsing="false" prefHeight="76.0" prefWidth="80.0" style="-fx-background-color: transparent;" toggleGroup="$colorGroup">
+                                 <graphic>
+                                    <ImageView fx:id="black" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                              </ToggleButton>
+                              <Label text="Nero" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#iniziaPvC" prefHeight="69.0" prefWidth="114.0" text="inizia" />
+               </children>
+            </VBox>
+         </center>
+         <top>
+            <Button mnemonicParsing="false" onAction="#backtohome" prefHeight="46.0" prefWidth="123.0" text="indietro" BorderPane.alignment="TOP_LEFT">
+               <BorderPane.margin>
+                  <Insets left="20.0" top="20.0" />
+               </BorderPane.margin>
+            </Button>
+         </top>
+      </BorderPane>
+      <BorderPane fx:id="pvp" prefHeight="1183.0" prefWidth="611.0" visible="false">
+         <!-- Il pulsante indietro in alto a sinistra -->
+         <top>
+            <Button mnemonicParsing="false" onAction="#backtohome" prefHeight="54.0" prefWidth="135.0" text="indietro">
+               <BorderPane.margin>
+                  <Insets left="20.0" top="20.0" />
+               </BorderPane.margin></Button>
+         </top>
 
-            <Label fx:id="whiteLabel" alignment="CENTER" layoutX="230.0" layoutY="552.0" prefHeight="76.0" prefWidth="231.0" style="-fx-background-color: lightgrey; -fx-background-radius: 20 20 20 20;" text="10:00" textAlignment="JUSTIFY">
-               <font>
-                  <Font size="32.0" />
-               </font>
-               <padding>
-                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-               </padding>
-            </Label>
-         </children>
-      </VBox>
+         <!-- La VBox posizionata al centro -->
+         <center>
+            <VBox alignment="CENTER" spacing="40.0">
+               <children>
+                  <Label styleClass="Headers" text="Player vs Player">
+                     <font>
+                        <Font size="59.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="durataLabel" text="durata: 10" />
+                  <Slider fx:id="durataSlider" max="60" maxWidth="400.0" min="1" prefHeight="20.0" prefWidth="709.0" value="10" />
+                  <Label fx:id="incrementoLabel" text="incremento: 0" />
+                  <Slider fx:id="incrementoSlider" max="30" maxWidth="400.0" min="0" prefHeight="20.0" prefWidth="400.0" value="0" />
+                  <Button mnemonicParsing="false" onAction="#iniziaPvP" prefHeight="61.0" prefWidth="208.0" text="Inizia">
+                     <VBox.margin>
+                        <Insets bottom="200.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+      <BorderPane fx:id="pvpgame" prefHeight="200.0" prefWidth="200.0" visible="false">
+         <center>
+      
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="blackLabel" alignment="CENTER" prefHeight="76.0" prefWidth="231.0" style=": lightgrey; : 20 20 20 20;" styleClass="stopwatch" text="10:00" textAlignment="JUSTIFY">
+                     <font>
+                        <Font size="32.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="30.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox fx:id="scacchierapvp" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" />
+                  <TextField fx:id="moveInputField" onAction="#handleMoveInput">
+                     <VBox.margin>
+                        <Insets bottom="30.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label fx:id="evaluationLabel" alignment="CENTER" contentDisplay="CENTER" minWidth="8.0" prefHeight="30.0" prefWidth="704.0" style="-fx-background-color: #333333;" styleClass="statslabel" />
+                  <Label fx:id="move1Label" alignment="CENTER" layoutX="10.0" layoutY="36.0" minWidth="670.0" prefHeight="30.0" prefWidth="670.0" style="-fx-background-color: #555555;" styleClass="statslabel" />
+                  <Label fx:id="move2Label" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="53.0" prefHeight="30.0" prefWidth="691.0" style="-fx-background-color: #333333;" styleClass="statslabel" />
+                  <Label fx:id="move3Label" alignment="CENTER" layoutX="10.0" layoutY="70.0" prefHeight="30.0" prefWidth="695.0" style="-fx-background-color: #555555;" styleClass="statslabel" />
+      
+                  <Label fx:id="whiteLabel" alignment="CENTER" layoutX="230.0" layoutY="552.0" prefHeight="76.0" prefWidth="231.0" styleClass="stopwatch" text="10:00" textAlignment="JUSTIFY">
+                     <font>
+                        <Font size="32.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
+         </center>
+         <top>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#backtopvp" prefHeight="46.0" prefWidth="125.0" text="indietro" BorderPane.alignment="TOP_LEFT">
+               <BorderPane.margin>
+                  <Insets left="20.0" top="20.0" />
+               </BorderPane.margin>
+            </Button>
+         </top>
+         <bottom>
+            <HBox alignment="CENTER" prefWidth="670.0" spacing="50.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#toggleevaluation" prefHeight="46.0" prefWidth="157.0" text="valutazione" />
+                  <Button mnemonicParsing="false" onAction="#togglebestmoves" prefHeight="46.0" prefWidth="156.0" text="suggerimenti" />
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="10.0" />
+               </BorderPane.margin>
+            </HBox>
+         </bottom>
+      </BorderPane>
       <VBox fx:id="pvcgame" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" visible="false">
-
-         <VBox fx:id="scacchiera"/>
          <Button mnemonicParsing="false" onAction="#backtopvc" text="indietro" />
-         <TextField fx:id="moveInputFieldpvc" onAction="#handleMoveInputpvc"/>
+
+         <HBox fx:id="scacchiera" alignment="CENTER" />
+         <TextField fx:id="moveInputFieldpvc" onAction="#handleMoveInputpvc" />
          <Label fx:id="evaluationLabelpvc" />
-         <Label fx:id="move1Labelpvc" text="porcodio" layoutX="10.0" layoutY="36.0" />
+         <Label fx:id="move1Labelpvc" layoutX="10.0" layoutY="36.0" />
          <Label fx:id="move2Labelpvc" layoutX="10.0" layoutY="53.0" />
          <Label fx:id="move3Labelpvc" layoutX="10.0" layoutY="70.0" />
       </VBox>

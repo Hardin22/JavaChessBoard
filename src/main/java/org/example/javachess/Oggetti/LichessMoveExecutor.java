@@ -15,7 +15,7 @@ import org.example.javachess.Utils.LichessAPIHelper;
 
 public class LichessMoveExecutor extends Application {
 
-    private static final String TOKEN = "stop-it-get-some-help";
+    private static final String TOKEN = "lip_ErJSzEA8dqySn05cjVDL";
     private static String gameId;
 
     public static void setGameId(String id) {

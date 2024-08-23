@@ -97,7 +97,7 @@ public class Stockfish {
     }
 
     // Funzione per valutare la posizione
-    public void evaluatePosition(String fen, Label evaluationLabel) {
+    public void evaluatePosition(String fen, Label evaluationLabel, EvalBar evalBar) {
         new Thread(() -> {
             try {
                 writer1.write("position fen " + fen + "\n");
@@ -119,13 +119,24 @@ public class Stockfish {
                             if (scoreType.equals("cp")) {
                                 final double score = Integer.parseInt(parts[scoreIndex + 2]) / 100.0;
                                 final double adjustedScore = fen.contains(" b ") ? -score : score;
-                                Platform.runLater(() -> evaluationLabel.setText("Depth " + depth + ": " + adjustedScore));
+                                Platform.runLater(() -> {
+                                    evaluationLabel.setText("Depth " + depth + ": " + adjustedScore);
+                                    evalBar.updateEvaluation(adjustedScore);
+                                    System.out.println("Depth " + depth + ": " + adjustedScore);
+                                });
 
                             } else if (scoreType.equals("mate")) {
                                 final int mateIn = Integer.parseInt(parts[scoreIndex + 2]);
-                                final String mateText = mateIn > 0 ? "#" + mateIn : "#-" + Math.abs(mateIn);
-                                Platform.runLater(() -> evaluationLabel.setText("Depth " + depth + ": " + mateText));
+                                final int adjustedMate = fen.contains(" b ") ? -mateIn : mateIn;
+                                final String mateText = adjustedMate > 0 ? "#" + adjustedMate : "#-" + Math.abs(adjustedMate);
+
+                                Platform.runLater(() -> {
+                                    // Aggiorna correttamente l'etichetta con il segno corretto
+                                    evaluationLabel.setText("Depth " + depth + ": " + mateText);
+                                    evalBar.updateEvaluation(adjustedMate > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY);
+                                });
                             }
+
                         }
                     } else if (line.startsWith("bestmove")) {
                         break;
@@ -136,6 +147,7 @@ public class Stockfish {
             }
         }).start();
     }
+
 
     // Funzione per ottenere le prime tre mosse migliori
     public void getTopThreeMoves(String fen, Label move1Label, Label move2Label, Label move3Label) {
@@ -187,9 +199,9 @@ public class Stockfish {
                                 int finalPv = pv;
                                 Platform.runLater(() -> {
                                     switch (finalPv) {
-                                        case 0 -> move1Label.setText(topMoves[0] + " (" + moveEvaluations[0] + ")");
-                                        case 1 -> move2Label.setText(topMoves[1] + " (" + moveEvaluations[1] + ")");
-                                        case 2 -> move3Label.setText(topMoves[2] + " (" + moveEvaluations[2] + ")");
+                                        case 0 -> move1Label.setText(topMoves[0] + " (" + moveEvaluations[0].replace(" CP", "") + ")");
+                                        case 1 -> move2Label.setText(topMoves[1] + " (" + moveEvaluations[1].replace(" CP", "") + ")");
+                                        case 2 -> move3Label.setText(topMoves[2] + " (" + moveEvaluations[2].replace(" CP", "") + ")");
                                     }
                                 });
                             }

@@ -28,11 +28,13 @@ public class PvpGame {
     private int increment;
     private boolean isWhiteTurn;
     private Task<Void> moveCalculationTask; // Task to track move calculations
+    private EvalBar evalBar;
 
-    public PvpGame(ChessBoardUI chessBoardUI, Label evaluationLabel, Label move1Label, Label move2Label, Label move3Label, Label whiteLabel, Label blackLabel, int gameDuration, int increment) {
+    public PvpGame(ChessBoardUI chessBoardUI, Label evaluationLabel, EvalBar evalBar, Label move1Label, Label move2Label, Label move3Label, Label whiteLabel, Label blackLabel, int gameDuration, int increment) {
         this.board = new Board();
         this.chessBoardUI = chessBoardUI;
         this.evaluationLabel = evaluationLabel;
+        this.evalBar = evalBar;
         this.move1Label = move1Label;
         this.move2Label = move2Label;
         this.move3Label = move3Label;
@@ -64,7 +66,7 @@ public class PvpGame {
         moveCalculationTask = new Task<Void>() {
             @Override
             protected Void call() {
-                stockfish.evaluatePosition(board.getFen(), evaluationLabel);
+                stockfish.evaluatePosition(board.getFen(), evaluationLabel, evalBar);
                 stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label);
                 return null;
             }

@@ -19,6 +19,7 @@ public class Main extends Application {
             // Configura la scena
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
+            scene.getStylesheets().add(getClass().getResource("/Styles/Style.css").toExternalForm());
             primaryStage.setTitle("Chess Application");
             primaryStage.show();
         } catch (IOException e) {

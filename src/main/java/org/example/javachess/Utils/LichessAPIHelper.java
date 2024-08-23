@@ -8,7 +8,7 @@ import java.net.URL;
 import org.json.JSONObject;
 
 public class LichessAPIHelper {
-    private static final String TOKEN = "none-of-your-business";
+    private static final String TOKEN = "lip_ErJSzEA8dqySn05cjVDL";
 
     public static String getCurrentGameId() throws Exception {
         String urlString = "https://lichess.org/api/account/playing";

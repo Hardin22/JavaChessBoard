@@ -1,6 +1,7 @@
 package org.example.javachess.Oggetti;
 
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,18 +19,22 @@ public class ChessBoardUI extends GridPane {
 
     public ChessBoardUI() {
         this.chessBoard = new Board();
+        this.setAlignment(Pos.CENTER); // Centra il conte scnuto del GridPane
         createBoard();
         updateBoard(chessBoard);
     }
 
     private void createBoard() {
+        Color lightWood = Color.rgb(125, 152, 172); // Light wood color
+        Color darkWood = Color.rgb(215, 224, 229);  // Dark wood color
+
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Rectangle square = new Rectangle(TILE_SIZE, TILE_SIZE);
                 if ((row + col) % 2 == 0) {
-                    square.setFill(Color.WHITE);
+                    square.setFill(lightWood);
                 } else {
-                    square.setFill(Color.FORESTGREEN);
+                    square.setFill(darkWood);
                 }
                 this.add(square, col, row);
             }
@@ -61,18 +66,18 @@ public class ChessBoardUI extends GridPane {
 
     private String getPieceFileName(Piece piece) {
         switch (piece) {
-            case WHITE_PAWN: return "wP.png";
-            case WHITE_ROOK: return "wR.png";
-            case WHITE_KNIGHT: return "wN.png";
-            case WHITE_BISHOP: return "wB.png";
-            case WHITE_QUEEN: return "wQ.png";
-            case WHITE_KING: return "wK.png";
-            case BLACK_PAWN: return "p.png";
-            case BLACK_ROOK: return "r.png";
-            case BLACK_KNIGHT: return "n.png";
-            case BLACK_BISHOP: return "b.png";
-            case BLACK_QUEEN: return "q.png";
-            case BLACK_KING: return "k.png";
+            case WHITE_PAWN: return "wp.png";
+            case WHITE_ROOK: return "wr.png";
+            case WHITE_KNIGHT: return "wn.png";
+            case WHITE_BISHOP: return "wb.png";
+            case WHITE_QUEEN: return "wq.png";
+            case WHITE_KING: return "wk.png";
+            case BLACK_PAWN: return "bp.png";
+            case BLACK_ROOK: return "br.png";
+            case BLACK_KNIGHT: return "bn.png";
+            case BLACK_BISHOP: return "bb.png";
+            case BLACK_QUEEN: return "bq.png";
+            case BLACK_KING: return "bk.png";
             default: return null;
         }
     }

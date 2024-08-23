@@ -25,11 +25,13 @@ public class PvcGame {
     private Stockfish playerStockfish; // Stockfish utilizzato per il computer
     private boolean isPlayerWhite;
     private Task<Void> moveCalculationTask; // Task per il calcolo delle mosse
+    private EvalBar evalBar;
 
-    public PvcGame(ChessBoardUI chessBoardUI, Label evaluationLabel, Label move1Label, Label move2Label, Label move3Label, boolean isPlayerWhite, int skillLevel) {
+    public PvcGame(ChessBoardUI chessBoardUI, Label evaluationLabel, EvalBar evalBar,  Label move1Label, Label move2Label, Label move3Label, boolean isPlayerWhite, int skillLevel) {
         this.board = new Board();
         this.chessBoardUI = chessBoardUI;
         this.evaluationLabel = evaluationLabel;
+        this.evalBar = evalBar;
         this.move1Label = move1Label;
         this.move2Label = move2Label;
         this.move3Label = move3Label;
@@ -65,7 +67,7 @@ public class PvcGame {
         moveCalculationTask = new Task<Void>() {
             @Override
             protected Void call() {
-                stockfish.evaluatePosition(board.getFen(), evaluationLabel);
+                stockfish.evaluatePosition(board.getFen(), evaluationLabel, evalBar);
                 stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label);
                 return null;
             }
