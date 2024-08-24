@@ -5,8 +5,7 @@ module org.example.javachess {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
 
-    opens org.example.javachess to javafx.fxml;
-    exports org.example.javachess;
+
     exports org.example.javachess.Application;
     opens org.example.javachess.Application to javafx.fxml;
     exports org.example.javachess.Oggetti;
@@ -15,4 +14,8 @@ module org.example.javachess {
     requires javafx.web;
     requires org.json;
     requires chesslib;
+    requires com.fazecast.jSerialComm;
+    opens org.example.javachess.Utils to com.fazecast.jSerialComm;
+
+
 }

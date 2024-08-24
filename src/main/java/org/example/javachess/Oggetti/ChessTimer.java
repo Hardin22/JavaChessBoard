@@ -13,13 +13,15 @@ public class ChessTimer {
     private int whiteTime;
     private int blackTime;
     private int increment;
+    private PvpGame pvpGame; // Add reference to PvpGame
 
-    public ChessTimer(Label whiteLabel, Label blackLabel, int gameDuration, int increment) {
+    public ChessTimer(Label whiteLabel, Label blackLabel, int gameDuration, int increment, PvpGame pvpGame) {
         this.whiteLabel = whiteLabel;
         this.blackLabel = blackLabel;
         this.whiteTime = gameDuration;
         this.blackTime = gameDuration;
         this.increment = increment;
+        this.pvpGame = pvpGame; // Initialize reference to PvpGame
     }
 
     public void initializetimer() {
@@ -38,6 +40,8 @@ public class ChessTimer {
                     if (whiteTime > 0) {
                         whiteTime--;
                         updateLabel(whiteLabel, whiteTime);
+                    } else {
+                        pvpGame.endGame("Il Nero vince per tempo", true);
                     }
                 });
             }
@@ -55,6 +59,8 @@ public class ChessTimer {
                     if (blackTime > 0) {
                         blackTime--;
                         updateLabel(blackLabel, blackTime);
+                    } else {
+                        pvpGame.endGame("Il Bianco vince per tempo", true);
                     }
                 });
             }

@@ -103,7 +103,7 @@ public class Stockfish {
                 writer1.write("position fen " + fen + "\n");
                 writer1.flush();
 
-                writer1.write("go depth 20\n");
+                writer1.write("go depth 18\n");
                 writer1.flush();
 
                 String line;
@@ -122,7 +122,6 @@ public class Stockfish {
                                 Platform.runLater(() -> {
                                     evaluationLabel.setText("Depth " + depth + ": " + adjustedScore);
                                     evalBar.updateEvaluation(adjustedScore);
-                                    System.out.println("Depth " + depth + ": " + adjustedScore);
                                 });
 
                             } else if (scoreType.equals("mate")) {

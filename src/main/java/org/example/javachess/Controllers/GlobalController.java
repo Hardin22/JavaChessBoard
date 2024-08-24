@@ -6,13 +6,22 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Arc;
 import javafx.stage.Stage;
 import javafx.scene.web.WebView;
-import org.example.javachess.Oggetti.ChessBoardUI;
-import org.example.javachess.Oggetti.PvpGame;
-import org.example.javachess.Oggetti.PvcGame;
-import org.example.javachess.Oggetti.WebViewExample;
-import org.example.javachess.Oggetti.EvalBar;
+import org.example.javachess.Oggetti.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.example.javachess.Oggetti.Stockfish;
+import java.nio.file.StandardCopyOption;
+
+
 
 import java.io.IOException;
 
@@ -22,6 +31,9 @@ public class GlobalController {
     private PvcGame pvcGame;
     private ChessBoardUI chessBoard;
     private ChessBoardUI chessBoardpvc;
+    private ChessBoardUI reviewChessBoard;
+    private EvalBar reviewEvalBar;
+    private Stockfish stockfish;
 
     @FXML
     private VBox home;
@@ -56,6 +68,8 @@ public class GlobalController {
     @FXML
     private Slider incrementoSlider;
     @FXML
+    private Slider difficoltàslider;
+    @FXML
     private ToggleButton whiteButton;
     @FXML
     private ToggleButton blackButton;
@@ -67,6 +81,20 @@ public class GlobalController {
     private VBox whiteVbox;
     @FXML
     private VBox blackVbox;
+    @FXML
+    private Label difficoltàLabel;
+    @FXML
+    private BorderPane Archive;
+    @FXML
+    private VBox archivevbox;
+    @FXML
+    private ScrollPane archiveScroll;
+    @FXML
+    private BorderPane GameReviewpage;
+    @FXML
+    private VBox reviewVbox;
+    @FXML
+    private HBox reviewHbox;
 
     private String selectedColor = "random";
 
@@ -75,24 +103,52 @@ public class GlobalController {
 
     private int durata = 10;
     private int incremento = 0;
+    private int skillLevel = 10;
+
 
     @FXML
     void initialize() {
         System.out.println("Global Controller initialized");
 
-        // Caricamento delle immagini
-        Image boardicon = new Image(getClass().getResource("/images/boardicon.PNG").toExternalForm());
-        boardlogo.setImage(boardicon);
+        try (InputStream boardiconStream = GlobalController.class.getResourceAsStream("/images/boardicon.png")) {
+            if (boardiconStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/boardicon.PNG");
+            }
+            Image boardicon = new Image(boardiconStream);
+            boardlogo.setImage(boardicon);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Image robotImage = new Image(getClass().getResource("/images/Robot.png").toExternalForm());
-        robotButtonImageView.setImage(robotImage);
+        try (InputStream robotImageStream = GlobalController.class.getResourceAsStream("/images/Robot.PNG")) {
+            if (robotImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Robot.PNG");
+            }
+            Image robotImage = new Image(robotImageStream);
+            robotButtonImageView.setImage(robotImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Image onlineImage = new Image(getClass().getResource("/images/Online.png").toExternalForm());
-        onlineButtonImageView.setImage(onlineImage);
+        try (InputStream onlineImageStream = GlobalController.class.getResourceAsStream("/images/Online.png")) {
+            if (onlineImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Online.png");
+            }
+            Image onlineImage = new Image(onlineImageStream);
+            onlineButtonImageView.setImage(onlineImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Image friendImage = new Image(getClass().getResource("/images/image.png").toExternalForm());
-        friendButtonImageView.setImage(friendImage);
-
+        try (InputStream friendImageStream = GlobalController.class.getResourceAsStream("/images/image.png")) {
+            if (friendImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/image.png");
+            }
+            Image friendImage = new Image(friendImageStream);
+            friendButtonImageView.setImage(friendImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Ascoltatori per slider
         durataSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             durata = newValue.intValue();
@@ -101,6 +157,10 @@ public class GlobalController {
         incrementoSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             incremento = newValue.intValue();
             incrementoLabel.setText("incremento: " + incremento + "s");
+        });
+        difficoltàslider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            skillLevel = newValue.intValue();
+            difficoltàLabel.setText("Difficoltà: " + skillLevel);
         });
 
         ToggleGroup colorGroup = new ToggleGroup();
@@ -136,7 +196,9 @@ public class GlobalController {
         chessBoardpvc = new ChessBoardUI();
         evalBarPvC = new EvalBar(20, 400);
         scacchiera.getChildren().addAll(chessBoardpvc, evalBarPvC);
+
     }
+
 
     @FXML
     private void showPvPpage() {
@@ -158,13 +220,16 @@ public class GlobalController {
         pvp.setVisible(false);
         pvcsetup.setVisible(false);
         home.setVisible(true);
+        Archive.setVisible(false);
+        archivevbox.getChildren().clear();
     }
 
     @FXML
     private void backtopvp() {
         System.out.println("Back to Player vs Player page");
         if (pvpGame != null) {
-            pvpGame.endGame();
+            boolean saveGame = pvpGame.isSaveGame();
+            pvpGame.endGame("Partita interrotta", saveGame);
             pvpGame = null;
         }
         chessBoard.resetBoard();
@@ -186,9 +251,6 @@ public class GlobalController {
     @FXML
     private void iniziaPvP() {
         System.out.println("Start Player vs Player game");
-        if (pvpGame != null) {
-            pvpGame.endGame();
-        }
         pvp.setVisible(false);
         pvpgame.setVisible(true);
         chessBoard.resetBoard();
@@ -235,7 +297,8 @@ public class GlobalController {
     private void backtopvc() {
         System.out.println("Back to Player vs Computer page");
         if (pvcGame != null) {
-            pvcGame.endGame();
+            boolean saveGame = pvcGame.isSaveGame();
+            pvcGame.endGame(saveGame);
             pvcGame = null;
         }
         pvcgame.setVisible(false);
@@ -247,10 +310,6 @@ public class GlobalController {
     private void iniziaPvC() {
         System.out.println("Start Player vs Computer game");
         boolean isPlayerWhite;
-        if (pvcGame != null) {
-            pvcGame.endGame();
-            pvcGame = null;
-        }
 
         pvcsetup.setVisible(false);
         pvcgame.setVisible(true);
@@ -262,9 +321,9 @@ public class GlobalController {
             isPlayerWhite = Math.random() < 0.5;
         }
 
-        int skillLevel = 1;
 
         pvcGame = new PvcGame(chessBoardpvc, evaluationLabelpvc, evalBarPvC, move1Labelpvc, move2Labelpvc, move3Labelpvc, isPlayerWhite, skillLevel);
+        System.out.println("skillLevel: " + skillLevel);
         pvcGame.startGame();
     }
 
@@ -300,6 +359,123 @@ public class GlobalController {
             move1Label.setVisible(true);
             move2Label.setVisible(true);
             move3Label.setVisible(true);
+        }
+    }
+    @FXML
+    private void showArchivePage() {
+        home.setVisible(false);
+        Archive.setVisible(true);
+
+        loadArchive();
+    }
+
+    private Path copyArchiveJsonToWritableLocation() {
+        Path targetPath = Paths.get("archive.json");
+
+        if (!Files.exists(targetPath)) {
+            try (InputStream resourceStream = getClass().getResourceAsStream("/archive.json")) {
+                if (resourceStream == null) {
+                    throw new IllegalArgumentException("archive.json not found in resources");
+                }
+                Files.copy(resourceStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return targetPath;
+    }
+    private void loadArchive() {
+        Path archivePath = copyArchiveJsonToWritableLocation();
+
+        try {
+            if (Files.exists(archivePath)) {
+                String content = new String(Files.readAllBytes(archivePath));
+                JSONArray gamesArray = new JSONArray(content);
+
+                for (int i = 0; i < gamesArray.length(); i++) {
+                    JSONObject game = gamesArray.getJSONObject(i);
+                    int gameId = game.getInt("id");
+                    String datetime = game.getString("datetime");
+                    String pgn = game.getString("pgn");
+                    String result = game.getString("result");
+
+                    // Creazione del Button per ciascuna partita
+                    Button gameButton = new Button(datetime + " - " + result);
+                    gameButton.setId("gameButton" + gameId);
+                    gameButton.setOnAction(event -> showArchiveGame(gameId, pgn));
+
+                    // Aggiunta del Button al VBox
+                    archivevbox.getChildren().add(gameButton);
+                }
+            } else {
+                System.out.println("Il file archive.json non esiste.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void showArchiveGame(int gameId, String pgn) {
+        stockfish = new Stockfish("/opt/homebrew/bin/stockfish");
+        // Show the Game Review page
+        Archive.setVisible(false);
+        GameReviewpage.setVisible(true);
+
+        // Initialize the review chessboard and add it to the VBox
+        reviewChessBoard = new ChessBoardUI();
+        reviewEvalBar = new EvalBar(20, 400); // Initialize the EvalBar
+
+        reviewHbox.getChildren().add(reviewChessBoard);
+        reviewHbox.getChildren().add(reviewEvalBar); // Add the EvalBar to the VBox
+        reviewChessBoard.loadPgn(pgn);
+
+        // Evaluate the current position and update the EvalBar
+        updateReviewEvalBar();
+    }
+
+    @FXML
+    private void backtoarchive() {
+        Archive.setVisible(true);
+        GameReviewpage.setVisible(false);
+
+        // Clean up the review chessboard and EvalBar
+        if (reviewChessBoard != null) {
+            reviewHbox.getChildren().remove(reviewChessBoard);
+            reviewChessBoard = null; // Helps with garbage collection
+        }
+
+        if (reviewEvalBar != null) {
+            reviewHbox.getChildren().remove(reviewEvalBar);
+            reviewEvalBar = null; // Helps with garbage collection
+        }
+
+        // Close Stockfish when exiting the review page
+        if (stockfish != null) {
+            stockfish.close();
+        }
+    }
+
+    @FXML
+    private void previousMove() {
+        if (reviewChessBoard != null) {
+            reviewChessBoard.previousMove();
+            updateReviewEvalBar(); // Update the EvalBar after moving
+        }
+    }
+
+    @FXML
+    private void nextMove() {
+        if (reviewChessBoard != null) {
+            reviewChessBoard.nextMove();
+            updateReviewEvalBar(); // Update the EvalBar after moving
+        }
+    }
+
+    private void updateReviewEvalBar() {
+        if (reviewChessBoard != null && reviewEvalBar != null) {
+            String currentFen = reviewChessBoard.getFen();
+            stockfish.evaluatePosition(currentFen, evaluationLabel, reviewEvalBar);
         }
     }
 }

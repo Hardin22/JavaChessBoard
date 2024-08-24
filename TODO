@@ -1,0 +1,5 @@
+1)bug eval bar quando è scacco matto nel review
+2) quando si clicca indietro viene salvato il review due volte, se la partita finisce.
+3) aggiungere immagini
+4) aggiungere labels di best moves a review
+5) quando non ci sono abbastanza mosse legali mostra le mosse precedentemente calcolate per l'altro giocatore.

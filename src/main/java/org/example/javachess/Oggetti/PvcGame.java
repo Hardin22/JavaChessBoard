@@ -9,7 +9,17 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class PvcGame {
@@ -26,8 +36,12 @@ public class PvcGame {
     private boolean isPlayerWhite;
     private Task<Void> moveCalculationTask; // Task per il calcolo delle mosse
     private EvalBar evalBar;
+    private StringBuilder pgn; // Variabile per memorizzare il PGN
+    private int gameId;
+    private Path archivePath;
+    public boolean saveGame = true;
 
-    public PvcGame(ChessBoardUI chessBoardUI, Label evaluationLabel, EvalBar evalBar,  Label move1Label, Label move2Label, Label move3Label, boolean isPlayerWhite, int skillLevel) {
+    public PvcGame(ChessBoardUI chessBoardUI, Label evaluationLabel, EvalBar evalBar, Label move1Label, Label move2Label, Label move3Label, boolean isPlayerWhite, int skillLevel) {
         this.board = new Board();
         this.chessBoardUI = chessBoardUI;
         this.evaluationLabel = evaluationLabel;
@@ -36,11 +50,41 @@ public class PvcGame {
         this.move2Label = move2Label;
         this.move3Label = move3Label;
         this.isPlayerWhite = isPlayerWhite;
-
-        // Inizializza Stockfish per l'analisi e per il giocatore/computer
         this.stockfish = new Stockfish("/opt/homebrew/bin/stockfish");
         this.playerStockfish = new Stockfish("/opt/homebrew/bin/stockfish");
         this.playerStockfish.setSkillLevel(skillLevel);
+        this.pgn = new StringBuilder(); // Inizializza la stringa PGN
+        this.archivePath = copyArchiveJsonToWritableLocation();
+
+        // Imposta il gameId come l'ultimo ID nel file JSON + 1
+        this.gameId = getNextGameId();
+
+    }
+    public boolean isSaveGame() {
+        return saveGame;
+    }
+
+    private int getNextGameId() {
+        int nextId = 1; // Valore di default se non ci sono partite salvate
+
+        try {
+            if (Files.exists(archivePath)) {
+                String content = new String(Files.readAllBytes(archivePath));
+                JSONArray gamesArray = new JSONArray(content);
+
+                for (int i = 0; i < gamesArray.length(); i++) {
+                    JSONObject game = gamesArray.getJSONObject(i);
+                    int id = game.getInt("id");
+                    if (id >= nextId) {
+                        nextId = id + 1;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return nextId;
     }
 
     public void startGame() {
@@ -49,12 +93,28 @@ public class PvcGame {
         move2Label.setText("");
         move3Label.setText("");
 
-        Platform.runLater(() -> chessBoardUI.setPosition(board.getFen()));
+        Platform.runLater(() -> chessBoardUI.setPosition(board.getFen(), null));
         evaluatePositionAndMoves();
 
         if (!isPlayerWhite) {
             handleComputerMove();
         }
+    }
+    private Path copyArchiveJsonToWritableLocation() {
+        Path targetPath = Paths.get("archive.json");
+
+        if (!Files.exists(targetPath)) {
+            try (InputStream resourceStream = getClass().getResourceAsStream("/archive.json")) {
+                if (resourceStream == null) {
+                    throw new IllegalArgumentException("archive.json not found in resources");
+                }
+                Files.copy(resourceStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return targetPath;
     }
 
     private void evaluatePositionAndMoves() {
@@ -84,10 +144,15 @@ public class PvcGame {
 
             if (move != null && MoveGenerator.generateLegalMoves(board).contains(move)) {
                 board.doMove(move);
-                Platform.runLater(() -> chessBoardUI.setPosition(board.getFen()));
+                updatePgn(move); // Aggiorna la stringa PGN con la nuova mossa
+                Platform.runLater(() -> chessBoardUI.setPosition(board.getFen(), move));
 
-                if (board.isMated() || board.isDraw()) {
-                    endGameWithMessage("Scaccomatto o partita patta, fine del gioco.");
+                if (board.isMated()) {
+                    String winner = board.getSideToMove().flip() == Side.WHITE ? "Bianco" : "Nero";
+                    endGameWithMessage("Scaccomatto! Vince il " + winner + ".");
+                } else if (board.isDraw()) {
+                    String drawReason = getDrawReason();
+                    endGameWithMessage("Partita patta per " + drawReason + ".");
                 } else {
                     handleComputerMove();
                 }
@@ -96,6 +161,27 @@ public class PvcGame {
             }
         } catch (Exception e) {
             System.out.println("Errore: Mossa non valida. Riprova.");
+        }
+    }
+
+    private void updatePgn(Move move) {
+        // Aggiorna la stringa PGN con la nuova mossa
+        if (isPlayerWhite) {
+            pgn.append(board.getMoveCounter()).append(". ").append(move.toString()).append(" ");
+        } else {
+            pgn.append(move.toString()).append(" ");
+        }
+    }
+
+    private String getDrawReason() {
+        if (board.isStaleMate()) {
+            return "Stallo";
+        } else if (board.isRepetition()) {
+            return "Triplice ripetizione";
+        } else if (board.isInsufficientMaterial()) {
+            return "Materiale insufficiente";
+        } else {
+            return "Altro";
         }
     }
 
@@ -109,15 +195,19 @@ public class PvcGame {
                 if (bestMoveUci != null) {
                     Move bestMove = parseMoveUci(bestMoveUci);
                     board.doMove(bestMove);
+                    updatePgn(bestMove); // Aggiorna la stringa PGN con la nuova mossa
 
                     // Aggiorna la scacchiera e calcola le nuove mosse
                     Platform.runLater(() -> {
-                        chessBoardUI.setPosition(board.getFen());
+                        chessBoardUI.setPosition(board.getFen(), bestMove);
 
-                        if (board.isMated() || board.isDraw()) {
-                            endGameWithMessage("Scaccomatto o partita patta, fine del gioco.");
+                        if (board.isMated()) {
+                            String winner = board.getSideToMove().flip() == Side.WHITE ? "Bianco" : "Nero";
+                            endGameWithMessage("Scaccomatto! Vince il " + winner + ".");
+                        } else if (board.isDraw()) {
+                            String drawReason = getDrawReason();
+                            endGameWithMessage("Partita patta per " + drawReason + ".");
                         } else {
-                            // Dopo la mossa del computer, aggiorna le migliori tre mosse per la posizione corrente
                             evaluatePositionAndMoves();
                         }
                     });
@@ -129,17 +219,54 @@ public class PvcGame {
         new Thread(computerMoveTask).start(); // Avvia il task della mossa del computer
     }
 
-
     private void endGameWithMessage(String message) {
         System.out.println(message);
         evaluationLabel.setText("");
         move1Label.setText(message);
         move2Label.setText("");
         move3Label.setText("");
-        endGame();
+        saveGameToJson(message);
+        saveGame = false;
+        endGame(false);
     }
 
-    public void endGame() {
+    private void saveGameToJson(String result) {
+        pgn.append(" ").append(result);
+        System.out.println("Partita salvata in formato PGN: " + pgn.toString());
+
+        try {
+            JSONObject gameJson = new JSONObject();
+            gameJson.put("id", gameId);
+            gameJson.put("pgn", pgn.toString());
+            gameJson.put("result", result);
+
+            // Get current date and time
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            String formattedDateTime = now.format(formatter);
+
+            // Add formatted date and time to JSON
+            gameJson.put("datetime", formattedDateTime);
+            // Leggi il file JSON esistente o creane uno nuovo
+            JSONArray gamesArray;
+            if (Files.exists(archivePath)) {
+                String content = new String(Files.readAllBytes(archivePath));
+                gamesArray = new JSONArray(content);
+            } else {
+                gamesArray = new JSONArray();
+            }
+
+            gamesArray.put(gameJson);
+
+            // Scrivi l'array aggiornato nel file JSON
+            Files.write(archivePath, gamesArray.toString(4).getBytes());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void endGame(boolean saveGame) {
         gameRunning = false;
 
         if (stockfish != null) {
@@ -156,6 +283,9 @@ public class PvcGame {
 
         if (moveCalculationTask != null && moveCalculationTask.isRunning()) {
             moveCalculationTask.cancel();  // Annulla qualsiasi calcolo in corso
+        }
+        if (saveGame) {
+            saveGameToJson("Partita interrotta.");
         }
     }
 

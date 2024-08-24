@@ -98,7 +98,7 @@
     -fx-font-family: 'Poppins';
     -fx-font-size: 18px;
     -fx-text-fill: white;
-    -fx-font-weight: regular;
+    -fx-font-weight: thin;
 }
 .choiceactive {
     -fx-background-radius: 20px;
@@ -116,4 +116,10 @@
     -fx-border-color: #9370DB;
     -fx-text-fill: white;
     -fx-padding: 0 10 10 10 ;
+}
+.scroll-pane .viewport {
+    -fx-background-color:  #1E1E1E;
+}
+.scroll-pane .scroll-bar {
+    -fx-background-color:  transparent;
 }
