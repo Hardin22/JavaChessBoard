@@ -35,10 +35,9 @@ public class EvalBar extends StackPane {
                 animateBars(0, getHeight(), 400); // 3 secondi per riempire la barra
             } else {
                 // Scegli il moltiplicatore in base al valore del punteggio
-                double divisor = Math.abs(score) > 3.0 ? 13.0 : 5.0;
 
                 // Normalizzazione dello score con il divisore scelto
-                double normalizedScore = Math.max(-1.0, Math.min(1.0, score / divisor));
+                double normalizedScore = Math.max(-1.0, Math.min(1.0, score / 6));
                 double newWhiteHeight = (1.0 + normalizedScore) / 2.0 * getHeight();
                 double newBlackHeight = getHeight() - newWhiteHeight;
 

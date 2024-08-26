@@ -79,8 +79,74 @@
     },
     {
         "result": "Partita interrotta",
-        "datetime": "2024-08-24 23:59",
-        "pgn": " Partita interrotta",
-        "id": 17
+        "datetime": "2024-08-25 01:30",
+        "pgn": "1. e2e4 e7e5 2. g1f3  Partita interrotta",
+        "id": 18
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "2024-08-25 03:53",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. f1c4 g8f6 4. d2d3 f8c5 5. b1c3 d7d6 6. c1g5 e8g8 7. c3d5 h7h6 8. d5f6 g8h8  Partita interrotta",
+        "id": 20
+    },
+    {
+        "result": "Partita interrotta.",
+        "datetime": "2024-08-25 04:01",
+        "pgn": "1. e2e4 2. c7c5 2. g1f3 3. b8c6  Partita interrotta.",
+        "id": 21
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "25-08-2024 19:00",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6  Partita interrotta",
+        "id": 26
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "25-08-2024 21:11",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6  Partita interrotta",
+        "id": 29
+    },
+    {
+        "result": "Scaccomatto! Vince il Bianco.",
+        "datetime": "25-08-2024 21:21",
+        "pgn": "1. e2e4 e7e5 2. d1h5 g8h6 3. f1c4 a7a6 4. d2d4 a6a5 5. c1h6 g7h6 6. h5f7  Scaccomatto! Vince il Bianco.",
+        "id": 30
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "25-08-2024 23:50",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. f1c4 g8f6 4. f3g5 d7d5 5. e4d5 f6d5 6. g5f7 e8f7 7. d1f3 f7e6 8. b1c3 c6b4 9. d2d4 b4c2 10. e1d1 c2d4 11. c4d5 e6d6 12. f3g3 d8d7 13. h2h3 d4f5 14. g3d3 c7c6 15. c3b5 c6b5 16. d5b7 d6c7 17. d3d7 c8d7 18. b7a8  Partita interrotta",
+        "id": 31
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "26-08-2024 01:21",
+        "pgn": "1. e2e4 e7e5 2. b1c3 f8c5 3. f2f4 d7d6 4. f4e5 b8c6 5. e5d6 d8d6 6. g1f3 c8g4  Il Nero vince per tempo",
+        "id": 32
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "26-08-2024 02:18",
+        "pgn": "1. e2e4 e7e5 2. b1c3 f8c5 3. f2f4 d7d6 4. f4e5 b8c6 5. e5d6 d8d6 6. g1f3 c8g4  Il Nero vince per tempo Partita interrotta",
+        "id": 32
+    },
+    {
+        "result": "Il Bianco vince per tempo",
+        "datetime": "26-08-2024 02:44",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. d2d4 e5d4 4. f3d4 g8f6 5. d4c6 b7c6 6. f1d3  Il Bianco vince per tempo",
+        "id": 33
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "26-08-2024 02:47",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. d2d4 e5d4 4. f3d4 g8f6 5. d4c6 b7c6 6. f1d3  Il Bianco vince per tempo Partita interrotta",
+        "id": 33
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "26-08-2024 03:24",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. f1b5 g8f6  Partita interrotta",
+        "id": 34
     }
 ]

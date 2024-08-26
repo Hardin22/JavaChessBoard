@@ -71,6 +71,15 @@ public class PvpGame {
         pgn.setLength(0); // Resetta la stringa PGN per la nuova partita
         evaluatePositionAndMoves();
     }
+
+    public Stockfish getStockfish(){
+        return this.stockfish;
+    }
+
+    public Board getBoard() {
+        return this.board;
+    }
+
     private Path copyArchiveJsonToWritableLocation() {
         Path targetPath = Paths.get("archive.json");
 
@@ -122,7 +131,7 @@ public class PvpGame {
             @Override
             protected Void call() {
                 stockfish.evaluatePosition(board.getFen(), evaluationLabel, evalBar);
-                stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label);
+                stockfish.getTopThreeMoves(board.getFen(),move1Label, move2Label, move3Label, chessBoardUI);
                 return null;
             }
         };
@@ -210,6 +219,10 @@ public class PvpGame {
         // Ferma i timer
         chessTimer.stopWhiteTimer();
         chessTimer.stopBlackTimer();
+        if (pgn.length() < 20){
+            System.out.println("Partita non salvata, mossa troppo breve");
+            saveGame=false;
+        }
 
         // Salva la partita in formato PGN
         if (saveGame) {
@@ -238,37 +251,38 @@ public class PvpGame {
         pgn.append(" ").append(result);
         System.out.println("Partita salvata in formato PGN: " + pgn.toString());
 
-        try {
-            JSONObject gameJson = new JSONObject();
-            gameJson.put("id", gameId);
-            gameJson.put("pgn", pgn.toString());
-            gameJson.put("result", result);
+            try {
+                JSONObject gameJson = new JSONObject();
+                gameJson.put("id", gameId);
+                gameJson.put("pgn", pgn.toString());
+                gameJson.put("result", result);
 
-            // Get current date and time
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            String formattedDateTime = now.format(formatter);
+                // Get current date and time
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                String formattedDateTime = now.format(formatter);
 
-            // Add formatted date and time to JSON
-            gameJson.put("datetime", formattedDateTime);
+                // Add formatted date and time to JSON
+                gameJson.put("datetime", formattedDateTime);
 
-            // Leggi il file JSON esistente o creane uno nuovo
-            JSONArray gamesArray;
-            if (Files.exists(archivePath)) {
-                String content = new String(Files.readAllBytes(archivePath));
-                gamesArray = new JSONArray(content);
-            } else {
-                gamesArray = new JSONArray();
+                // Leggi il file JSON esistente o creane uno nuovo
+                JSONArray gamesArray;
+                if (Files.exists(archivePath)) {
+                    String content = new String(Files.readAllBytes(archivePath));
+                    gamesArray = new JSONArray(content);
+                } else {
+                    gamesArray = new JSONArray();
+                }
+
+                gamesArray.put(gameJson);
+
+                // Scrivi l'array aggiornato nel file JSON
+                Files.write(archivePath, gamesArray.toString(4).getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            gamesArray.put(gameJson);
-
-            // Scrivi l'array aggiornato nel file JSON
-            Files.write(archivePath, gamesArray.toString(4).getBytes());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private Move parseMoveInput(String moveInput) {

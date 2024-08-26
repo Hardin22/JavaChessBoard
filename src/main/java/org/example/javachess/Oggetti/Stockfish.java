@@ -1,17 +1,21 @@
 package org.example.javachess.Oggetti;
 
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Square;
+import com.github.bhlangonijr.chesslib.move.Move;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
-import com.github.bhlangonijr.chesslib.Board;
-import com.github.bhlangonijr.chesslib.Piece;
-import com.github.bhlangonijr.chesslib.move.Move;
-import com.github.bhlangonijr.chesslib.move.MoveGenerator;
-import com.github.bhlangonijr.chesslib.Square;
+import org.example.javachess.Oggetti.ChessHelper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javafx.scene.paint.Color;
 import org.example.javachess.Utils.ChessMoveConverter;
 
 public class Stockfish {
@@ -26,7 +30,6 @@ public class Stockfish {
 
     // Aggiungi questa variabile per il livello di abilità
     private int skillLevel;
-
     public Stockfish(String stockfishPath) {
         try {
             // Inizializza il primo processo di Stockfish
@@ -45,6 +48,10 @@ public class Stockfish {
                 }
             }
 
+            // Configura Stockfish per utilizzare 4 thread
+            writer1.write("setoption name Threads value 2\n");
+            writer1.flush();
+
             // Inizializza il secondo processo di Stockfish
             ProcessBuilder pb2 = new ProcessBuilder(stockfishPath);
             process2 = pb2.start();
@@ -59,6 +66,11 @@ public class Stockfish {
                     break;
                 }
             }
+
+            // Configura il secondo processo per utilizzare 4 thread
+            writer2.write("setoption name Threads value 2\n");
+            writer2.flush();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +93,7 @@ public class Stockfish {
             writer1.write("position fen " + fen + "\n");
             writer1.flush();
 
-            writer1.write("go depth 18\n");
+            writer1.write("go depth 14\n");
             writer1.flush();
 
             String line;
@@ -96,18 +108,19 @@ public class Stockfish {
         return null;
     }
 
+
     // Funzione per valutare la posizione
     public void evaluatePosition(String fen, Label evaluationLabel, EvalBar evalBar) {
         new Thread(() -> {
             try {
-                writer1.write("position fen " + fen + "\n");
-                writer1.flush();
+                writer2.write("position fen " + fen + "\n");
+                writer2.flush();
 
-                writer1.write("go depth 18\n");
-                writer1.flush();
+                writer2.write("go depth 14\n");
+                writer2.flush();
 
                 String line;
-                while ((line = reader1.readLine()) != null) {
+                while ((line = reader2.readLine()) != null) {
                     if (line.startsWith("info depth ")) {
                         String[] parts = line.split(" ");
                         final int depth = Integer.parseInt(parts[2]);
@@ -147,9 +160,10 @@ public class Stockfish {
         }).start();
     }
 
+    Color LIGHT_ORANGE = Color.rgb(242, 198, 126);
+    Color LIGHT_GREEN = Color.rgb(175, 199, 119);
 
-    // Funzione per ottenere le prime tre mosse migliori
-    public void getTopThreeMoves(String fen, Label move1Label, Label move2Label, Label move3Label) {
+    public void getTopThreeMoves(String fen, Label move1Label, Label move2Label, Label move3Label, ChessBoardUI chessBoard) {
         new Thread(() -> {
             try {
                 writer2.write("setoption name MultiPV value 3\n");
@@ -158,7 +172,7 @@ public class Stockfish {
                 writer2.write("position fen " + fen + "\n");
                 writer2.flush();
 
-                writer2.write("go depth 18\n");
+                writer2.write("go depth 14\n");
                 writer2.flush();
 
                 String line;
@@ -194,13 +208,27 @@ public class Stockfish {
                                 topMoves[pv] = algebraicMove;
                                 moveEvaluations[pv] = moveEvaluation;
 
-                                // Aggiorna la label corrispondente con la nuova mossa e valutazione
+                                // Aggiorna la label e disegna la freccia
                                 int finalPv = pv;
                                 Platform.runLater(() -> {
+                                    // Cancella tutte le frecce prima di disegnare le nuove
+                                    if (finalPv == 0) {
+                                        chessBoard.clearArrows();
+                                    }
+
                                     switch (finalPv) {
-                                        case 0 -> move1Label.setText(topMoves[0] + " (" + moveEvaluations[0].replace(" CP", "") + ")");
-                                        case 1 -> move2Label.setText(topMoves[1] + " (" + moveEvaluations[1].replace(" CP", "") + ")");
-                                        case 2 -> move3Label.setText(topMoves[2] + " (" + moveEvaluations[2].replace(" CP", "") + ")");
+                                        case 0 -> {
+                                            move1Label.setText(topMoves[0] + " (" + moveEvaluations[0].replace(" CP", "") + ")");
+                                            drawArrowFromMove(moveInUci, chessBoard, LIGHT_GREEN);
+                                        }
+                                        case 1 -> {
+                                            move2Label.setText(topMoves[1] + " (" + moveEvaluations[1].replace(" CP", "") + ")");
+                                            drawArrowFromMove(moveInUci, chessBoard, LIGHT_ORANGE);
+                                        }
+                                        case 2 -> {
+                                            move3Label.setText(topMoves[2] + " (" + moveEvaluations[2].replace(" CP", "") + ")");
+                                            drawArrowFromMove(moveInUci, chessBoard, LIGHT_ORANGE);
+                                        }
                                     }
                                 });
                             }
@@ -214,6 +242,105 @@ public class Stockfish {
             }
         }).start();
     }
+
+        // ... (altri metodi esistenti)
+
+        // Nuova funzione per valutare le mosse legali di un pezzo
+    public Map<Square, Double> evaluateMovesForPiece(Board board, Square pieceSquare) {
+        Map<Square, Double> moveEvaluations = new HashMap<>();
+        ChessHelper chessHelper = new ChessHelper();
+
+        try {
+            // Ottieni tutte le mosse legali per il pezzo selezionato
+            List<Square> legalMoves = chessHelper.getLegalMovesForPiece(board, pieceSquare);
+
+            // Valuta ciascuna mossa
+            for (Square toSquare : legalMoves) {
+                Board tempBoard = new Board();
+                tempBoard.loadFromFen(board.getFen());
+                Move move = new Move(pieceSquare, toSquare);
+                tempBoard.doMove(move);
+
+                // Utilizza il writer1 per valutare rapidamente la posizione
+                writer1.write("position fen " + tempBoard.getFen() + "\n");
+                writer1.flush();
+
+                writer1.write("go depth 7\n"); // Profondità bassa per velocità
+                writer1.flush();
+
+                String line;
+                double evaluation = 0.0;
+                while ((line = reader1.readLine()) != null) {
+                    if (line.startsWith("info depth 7")) {
+                        String[] parts = line.split(" ");
+                        int scoreIndex = Arrays.asList(parts).indexOf("score");
+                        if (scoreIndex != -1) {
+                            String scoreType = parts[scoreIndex + 1];
+                            if (scoreType.equals("cp")) {
+                                evaluation = Integer.parseInt(parts[scoreIndex + 2]) / 100.0;
+                            } else if (scoreType.equals("mate")) {
+                                int mateIn = Integer.parseInt(parts[scoreIndex + 2]);
+                                evaluation = mateIn > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+                            }
+                        }
+                    } else if (line.startsWith("bestmove")) {
+                        break;
+                    }
+                }
+
+                // Aggiungi la valutazione alla mappa
+                moveEvaluations.put(toSquare, evaluation);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return moveEvaluations;
+    }
+    public void highlightLegalMovesWithEvaluation(Board board, Square pieceSquare, ChessBoardUI chessBoard) {
+        Map<Square, Double> evaluations = evaluateMovesForPiece(board, pieceSquare);
+
+        for (Map.Entry<Square, Double> entry : evaluations.entrySet()) {
+            Square toSquare = entry.getKey();
+            double eval = entry.getValue();
+
+            Color color;
+            if (eval > 0.5) {
+                color = Color.GREEN; // Buona mossa
+            } else if (eval > -0.5) {
+                color = Color.YELLOW; // Mossa neutra o imprecisione
+            } else {
+                color = Color.RED; // Blunder o mossa cattiva
+            }
+
+            int col = toSquare.ordinal() % 8;
+            int row = 7 - (toSquare.ordinal() / 8);
+            chessBoard.highlightSquare(col, row, color);
+        }
+    }
+
+
+
+
+
+
+
+    // Funzione per convertire la mossa UCI in coordinate e disegnare la freccia
+    private void drawArrowFromMove(String moveInUci, ChessBoardUI chessBoard, Color color) {
+        // Converti la mossa in coordinate
+        int fromCol = moveInUci.charAt(0) - 'a';
+        int fromRow = '8' - moveInUci.charAt(1);
+        int toCol = moveInUci.charAt(2) - 'a';
+        int toRow = '8' - moveInUci.charAt(3);
+
+        // Disegna la freccia sulla scacchiera
+        chessBoard.drawArrowOnBoard(fromCol, fromRow, toCol, toRow, color);
+    }
+
+
+
+    // Funzione per ottenere le prime tre mosse migliori
+
 
 
     // Funzione per chiudere Stockfish

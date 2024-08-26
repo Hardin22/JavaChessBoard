@@ -1,5 +1,7 @@
 package org.example.javachess.Controllers;
 
+import com.github.bhlangonijr.chesslib.Square;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -58,6 +60,10 @@ public class GlobalController {
     @FXML
     private ImageView friendButtonImageView;
     @FXML
+    private ImageView archiveButtonImageView;
+    @FXML
+    private ImageView themeButtonImageView;
+    @FXML
     private HBox scacchierapvp;
     @FXML
     private Label durataLabel;
@@ -95,6 +101,76 @@ public class GlobalController {
     private VBox reviewVbox;
     @FXML
     private HBox reviewHbox;
+    @FXML
+    private BorderPane theme;
+    @FXML
+    private BorderPane themeSelection;
+    @FXML
+    private ImageView boardpreview;
+    @FXML
+    private ImageView piecepreview;
+    @FXML
+    private BorderPane pieceSelection;
+    @FXML
+    private BorderPane boardSelection;
+    @FXML
+    private Button Marrone;
+    @FXML
+    private Button Legno;
+    @FXML
+    private Button Marghiacciato;
+    @FXML
+    private Button Bubblegum;
+    @FXML
+    private Button Checkers;
+    @FXML
+    private Button Neon;
+    @FXML
+    private ImageView marroneimage;
+    @FXML
+    private ImageView legnoimage;
+    @FXML
+    private ImageView marghiacciatoimage;
+    @FXML
+    private ImageView bubblegumimage;
+    @FXML
+    private ImageView checkersimage;
+    @FXML
+    private ImageView neonimage;
+    @FXML
+    private Button Legnopieces;
+    @FXML
+    private Button Vetropieces;
+    @FXML
+    private Button Classicopieces;
+    @FXML
+    private Button Neonpieces;
+    @FXML
+    private Button Bubblegumpieces;
+    @FXML
+    private Button Spraypieces;
+    @FXML
+    private ImageView Legnoking;
+    @FXML
+    private ImageView Vetroking;
+    @FXML
+    private ImageView Classicoking;
+    @FXML
+    private ImageView Neonking;
+    @FXML
+    private ImageView Bubblegumking;
+    @FXML
+    private ImageView Sprayking;
+    @FXML
+    private Label move1labelreview;
+    @FXML
+    private Label move2labelreview;
+    @FXML
+    private Label move3labelreview;
+    @FXML
+    private Label evalscorereview;
+
+
 
     private String selectedColor = "random";
 
@@ -104,6 +180,9 @@ public class GlobalController {
     private int durata = 10;
     private int incremento = 0;
     private int skillLevel = 10;
+
+    private String pieceStyle = "Legno";
+    private String boardStyle = "Legno.png";
 
 
     @FXML
@@ -149,6 +228,154 @@ public class GlobalController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try (InputStream archiveImageStream = GlobalController.class.getResourceAsStream("/images/archive.png")) {
+            if (archiveImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/archive.png");
+            }
+            Image archiveimage = new Image(archiveImageStream);
+            archiveButtonImageView.setImage(archiveimage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream themeImageStream = GlobalController.class.getResourceAsStream("/images/theme.png")) {
+            if (themeImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/theme.png");
+            }
+            Image themeImage = new Image(themeImageStream);
+            themeButtonImageView.setImage(themeImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream marroneImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/Marrone.png")) {
+            if (marroneImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/Marrone.png");
+            }
+            Image marroneImage = new Image(marroneImageStream);
+            marroneimage.setImage(marroneImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream legnoImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/Legno.png")) {
+            if (legnoImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/Legno.png");
+            }
+            Image legnoImage = new Image(legnoImageStream);
+            legnoimage.setImage(legnoImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream marghiacciatoImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/Marghiacciato.png")) {
+            if (marghiacciatoImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/Marghiacciato.png");
+            }
+            Image marghiacciatoImage = new Image(marghiacciatoImageStream);
+            marghiacciatoimage.setImage(marghiacciatoImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream bubblegumImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/Bubblegum.png")) {
+            if (bubblegumImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/Bubblegum.png");
+            }
+            Image bubblegumImage = new Image(bubblegumImageStream);
+            bubblegumimage.setImage(bubblegumImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream checkersImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/Checkers.png")) {
+            if (checkersImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/Checkers.png");
+            }
+            Image checkersImage = new Image(checkersImageStream);
+            checkersimage.setImage(checkersImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream neonImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/Neon.png")) {
+            if (neonImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/Neon.png");
+            }
+            Image neonImage = new Image(neonImageStream);
+            neonimage.setImage(neonImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream boardpreviewImageStream = GlobalController.class.getResourceAsStream("/images/Scacchiere/"+ boardStyle)) {
+            if (boardpreviewImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Scacchiere/"+ boardStyle);
+            }
+            Image boardpreviewImage = new Image(boardpreviewImageStream);
+            boardpreview.setImage(boardpreviewImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream piecepreviewImageStream = GlobalController.class.getResourceAsStream("/images/preview.png")) {
+            if (piecepreviewImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/previews.png");
+            }
+            Image piecepreviewImage = new Image(piecepreviewImageStream);
+            piecepreview.setImage(piecepreviewImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream legnokingImageStream = GlobalController.class.getResourceAsStream("/images/Pieces/Legno/wk.png")) {
+            if (legnokingImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Pieces/Legno/wk.png");
+            }
+            Image legnokingImage = new Image(legnokingImageStream);
+            Legnoking.setImage(legnokingImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream vetrokingImageStream = GlobalController.class.getResourceAsStream("/images/Pieces/Vetro/wk.png")) {
+            if (vetrokingImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Pieces/Vetro/wk.png");
+            }
+            Image vetrokingImage = new Image(vetrokingImageStream);
+            Vetroking.setImage(vetrokingImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream classicokingImageStream = GlobalController.class.getResourceAsStream("/images/Pieces/Classico/wk.png")) {
+            if (classicokingImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Pieces/Classico/wk.png");
+            }
+            Image classicokingImage = new Image(classicokingImageStream);
+            Classicoking.setImage(classicokingImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream neonkingImageStream = GlobalController.class.getResourceAsStream("/images/Pieces/Neon/wk.png")) {
+            if (neonkingImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Pieces/Neon/wk.png");
+            }
+            Image neonkingImage = new Image(neonkingImageStream);
+            Neonking.setImage(neonkingImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream bubblegumkingImageStream = GlobalController.class.getResourceAsStream("/images/Pieces/Bubblegum/wk.png")) {
+            if (bubblegumkingImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Pieces/Bubblegum/wk.png");
+            }
+            Image bubblegumkingImage = new Image(bubblegumkingImageStream);
+            Bubblegumking.setImage(bubblegumkingImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (InputStream spraykingImageStream = GlobalController.class.getResourceAsStream("/images/Pieces/Spray/wk.png")) {
+            if (spraykingImageStream == null) {
+                throw new IllegalArgumentException("Immagine non trovata: /images/Pieces/Spray/wk.png");
+            }
+            Image spraykingImage = new Image(spraykingImageStream);
+            Sprayking.setImage(spraykingImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
         // Ascoltatori per slider
         durataSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             durata = newValue.intValue();
@@ -188,14 +415,6 @@ public class GlobalController {
         });
 
         // Inizializzazione della scacchiera PvP e EvalBar
-        chessBoard = new ChessBoardUI();
-        evalBarPvP = new EvalBar(20, 400);
-        scacchierapvp.getChildren().addAll(chessBoard, evalBarPvP);
-
-        // Inizializzazione della scacchiera PvC e EvalBar
-        chessBoardpvc = new ChessBoardUI();
-        evalBarPvC = new EvalBar(20, 400);
-        scacchiera.getChildren().addAll(chessBoardpvc, evalBarPvC);
 
     }
 
@@ -219,9 +438,10 @@ public class GlobalController {
     private void backtohome() {
         pvp.setVisible(false);
         pvcsetup.setVisible(false);
-        home.setVisible(true);
         Archive.setVisible(false);
         archivevbox.getChildren().clear();
+        themeSelection.setVisible(false);
+        home.setVisible(true);
     }
 
     @FXML
@@ -253,11 +473,24 @@ public class GlobalController {
         System.out.println("Start Player vs Player game");
         pvp.setVisible(false);
         pvpgame.setVisible(true);
-        chessBoard.resetBoard();
 
+        // Crea la scacchiera e l'EvalBar qui
+        chessBoard = new ChessBoardUI(boardStyle, pieceStyle);
+        evalBarPvP = new EvalBar(20, 400);
+
+        // Aggiungi la scacchiera e l'EvalBar al layout
+        scacchierapvp.getChildren().clear(); // Pulisci prima il contenitore
+        scacchierapvp.getChildren().addAll(chessBoard, evalBarPvP);
+
+        chessBoard.resetBoard();
         pvpGame = new PvpGame(chessBoard, evaluationLabel, evalBarPvP, move1Label, move2Label, move3Label, whiteLabel, blackLabel, durata*60, incremento);
         pvpGame.startGame();
     }
+    @FXML
+    private TextField legalmovesinput; // L'InputField nel tuo file FXML
+
+
+
 
     @FXML
     private TextField moveInputField;
@@ -313,6 +546,7 @@ public class GlobalController {
 
         pvcsetup.setVisible(false);
         pvcgame.setVisible(true);
+
         if (selectedColor.equals("white")) {
             isPlayerWhite = true;
         } else if (selectedColor.equals("black")) {
@@ -321,11 +555,19 @@ public class GlobalController {
             isPlayerWhite = Math.random() < 0.5;
         }
 
+        // Crea la scacchiera e l'EvalBar qui
+        chessBoardpvc = new ChessBoardUI(boardStyle, pieceStyle);
+        evalBarPvC = new EvalBar(20, 400);
+
+        // Aggiungi la scacchiera e l'EvalBar al layout
+        scacchiera.getChildren().clear(); // Pulisci prima il contenitore
+        scacchiera.getChildren().addAll(chessBoardpvc, evalBarPvC);
 
         pvcGame = new PvcGame(chessBoardpvc, evaluationLabelpvc, evalBarPvC, move1Labelpvc, move2Labelpvc, move3Labelpvc, isPlayerWhite, skillLevel);
         System.out.println("skillLevel: " + skillLevel);
         pvcGame.startGame();
     }
+
 
     @FXML
     private void handleMoveInputpvc() {
@@ -403,6 +645,7 @@ public class GlobalController {
                     // Creazione del Button per ciascuna partita
                     Button gameButton = new Button(datetime + " - " + result);
                     gameButton.setId("gameButton" + gameId);
+                    gameButton.getStyleClass().add("archivebuttons"); // Aggiungi la classe CSS
                     gameButton.setOnAction(event -> showArchiveGame(gameId, pgn));
 
                     // Aggiunta del Button al VBox
@@ -423,7 +666,7 @@ public class GlobalController {
         GameReviewpage.setVisible(true);
 
         // Initialize the review chessboard and add it to the VBox
-        reviewChessBoard = new ChessBoardUI();
+        reviewChessBoard = new ChessBoardUI(boardStyle, pieceStyle);
         reviewEvalBar = new EvalBar(20, 400); // Initialize the EvalBar
 
         reviewHbox.getChildren().add(reviewChessBoard);
@@ -438,6 +681,10 @@ public class GlobalController {
     private void backtoarchive() {
         Archive.setVisible(true);
         GameReviewpage.setVisible(false);
+        evalscorereview.setText("");
+        move1labelreview.setText("");
+        move2labelreview.setText("");
+        move3labelreview.setText("");
 
         // Clean up the review chessboard and EvalBar
         if (reviewChessBoard != null) {
@@ -475,7 +722,47 @@ public class GlobalController {
     private void updateReviewEvalBar() {
         if (reviewChessBoard != null && reviewEvalBar != null) {
             String currentFen = reviewChessBoard.getFen();
-            stockfish.evaluatePosition(currentFen, evaluationLabel, reviewEvalBar);
+            stockfish.evaluatePosition(currentFen, evalscorereview, reviewEvalBar);
+            stockfish.getTopThreeMoves(currentFen, move1labelreview, move2labelreview, move3labelreview, reviewChessBoard);
         }
+
+    }
+    @FXML
+    private void showThemepage(){
+        themeSelection.setVisible(true);
+        home.setVisible(false);
+    }
+    @FXML
+    private void changeboard(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        String buttonId = clickedButton.getId();
+        // Store the buttonId in a class-level variable if needed
+        boardStyle = buttonId + ".png";
+    }
+    @FXML
+    private void backtothemes(){
+        boardSelection.setVisible(false);
+        themeSelection.setVisible(true);
+        pieceSelection.setVisible(false);
+    }
+    @FXML
+    private void showPieceSelection(){
+        pieceSelection.setVisible(true);
+        themeSelection.setVisible(false);
+    }
+    @FXML
+    private void showBoardSelection(){
+        boardSelection.setVisible(true);
+        themeSelection.setVisible(false);
+
+    }
+    @FXML
+    private void changepieces(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        String buttonId = clickedButton.getId();
+        // Remove the substring "pieces" from the button ID
+        String folderName = buttonId.replace("pieces", "");
+        // Store the folder name in the pieceStyle variable
+        pieceStyle = folderName;
     }
 }

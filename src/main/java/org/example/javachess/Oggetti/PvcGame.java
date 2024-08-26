@@ -128,7 +128,7 @@ public class PvcGame {
             @Override
             protected Void call() {
                 stockfish.evaluatePosition(board.getFen(), evaluationLabel, evalBar);
-                stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label);
+                stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label, chessBoardUI);
                 return null;
             }
         };
@@ -242,7 +242,7 @@ public class PvcGame {
 
             // Get current date and time
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
             String formattedDateTime = now.format(formatter);
 
             // Add formatted date and time to JSON
@@ -268,7 +268,10 @@ public class PvcGame {
 
     public void endGame(boolean saveGame) {
         gameRunning = false;
-
+        if (pgn.length() < 10){
+            saveGame = false;
+            System.out.println("Partita non salvata, mossa minima non raggiunta.");
+        }
         if (stockfish != null) {
             stockfish.close();
             stockfish = null;
