@@ -26,7 +26,27 @@
 }
 @font-face {
     font-family: 'Poppins';
-    src: url('../Font/Poppins/Poppins-Regular.ttf');
+    src: url('/Font/Poppins/Poppins-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/Font/Poppins/Poppins-Medium.ttf');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/Font/Poppins/Poppins-Bold.ttf');
+    font-weight: bold;
+}
+@font-face {
+    font-family : 'Chess Alpha';
+    src: url('/Chess_font/Chess_Alpha/Alpha.ttf');
+}
+* {
+    -fx-font-family: 'Poppins';
 }
 
 .custom-font {
@@ -97,7 +117,7 @@
 }
 .statslabel {
     -fx-font-family: 'Poppins';
-    -fx-font-size: 14px;
+    -fx-font-size: 20px;
     -fx-text-fill: white;
     -fx-font-weight: thin;
     -fx-max-height:10px;

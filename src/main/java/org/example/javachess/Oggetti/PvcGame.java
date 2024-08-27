@@ -127,8 +127,7 @@ public class PvcGame {
         moveCalculationTask = new Task<Void>() {
             @Override
             protected Void call() {
-                stockfish.evaluatePosition(board.getFen(), evaluationLabel, evalBar);
-                stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label, chessBoardUI);
+                stockfish.getTopThreeMoves(board.getFen(), move1Label, move2Label, move3Label, chessBoardUI, evaluationLabel, evalBar);
                 return null;
             }
         };

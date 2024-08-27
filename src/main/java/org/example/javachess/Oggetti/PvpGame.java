@@ -79,6 +79,11 @@ public class PvpGame {
     public Board getBoard() {
         return this.board;
     }
+    public String getEvaluationLabel(){
+        return evaluationLabel.getText();
+    }
+
+
 
     private Path copyArchiveJsonToWritableLocation() {
         Path targetPath = Paths.get("archive.json");
@@ -130,8 +135,7 @@ public class PvpGame {
         moveCalculationTask = new Task<Void>() {
             @Override
             protected Void call() {
-                stockfish.evaluatePosition(board.getFen(), evaluationLabel, evalBar);
-                stockfish.getTopThreeMoves(board.getFen(),move1Label, move2Label, move3Label, chessBoardUI);
+                stockfish.getTopThreeMoves(board.getFen(),move1Label, move2Label, move3Label, chessBoardUI, evaluationLabel, evalBar);
                 return null;
             }
         };
@@ -215,7 +219,6 @@ public class PvpGame {
 
     public void endGame(String endMessage, boolean saveGame) {
         gameRunning = false;
-
         // Ferma i timer
         chessTimer.stopWhiteTimer();
         chessTimer.stopBlackTimer();

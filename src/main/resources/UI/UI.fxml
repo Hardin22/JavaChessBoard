@@ -260,7 +260,7 @@
                         <Insets top="30.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="legalmovesinput" layoutX="10.0" layoutY="431.0" />
+                  <TextField fx:id="legalmovesinput" layoutX="10.0" layoutY="431.0" onAction="#handleLegalMoves" />
                </children>
             </VBox>
          </center>

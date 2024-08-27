@@ -42,9 +42,9 @@ public class ChessMoveConverter {
         }
 
         // Add piece symbol (nothing for pawns)
-        if (movingPiece != Piece.WHITE_PAWN && movingPiece != Piece.BLACK_PAWN) {
-            notation.append(getPieceSymbol(movingPiece));
-        }
+
+        notation.append(getPieceSymbol(movingPiece));
+
 
         // Capture
         if (board.getPiece(to) != Piece.NONE) {
@@ -90,22 +90,32 @@ public class ChessMoveConverter {
     private String getPieceSymbol(Piece piece) {
         switch (piece) {
             case WHITE_KNIGHT:
+                return "\u2658"; // Cavallo Bianco
             case BLACK_KNIGHT:
-                return "N";
+                return "\u265E"; // Cavallo Nero
             case WHITE_BISHOP:
+                return "\u2657"; // Alfiere Bianco
             case BLACK_BISHOP:
-                return "B";
+                return "\u265D"; // Alfiere Nero
             case WHITE_ROOK:
+                return "\u2656"; // Torre Bianca
             case BLACK_ROOK:
-                return "R";
+                return "\u265C"; // Torre Nera
             case WHITE_QUEEN:
+                return "\u2655"; // Regina Bianca
             case BLACK_QUEEN:
-                return "Q";
+                return "\u265B"; // Regina Nera
             case WHITE_KING:
+                return "\u2654"; // Re Bianco
             case BLACK_KING:
-                return "K";
+                return "\u265A"; // Re Nero
+            case WHITE_PAWN:
+                return "\u2659"; // Pedone Bianco
+            case BLACK_PAWN:
+                return "\u265F"; // Pedone Nero
             default:
-                return ""; // For pawns, return an empty string
+                return ""; // Caso di errore o pezzo non riconosciuto
         }
     }
+
 }

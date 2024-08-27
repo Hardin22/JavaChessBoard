@@ -150,6 +150,7 @@ public class ChessBoardUI extends GridPane {
     private Node previousToHighlight;
 
     public void updateBoard(Board board, Move lastMove, String pieceStyle) {
+        clearHighlights();
         // Remove previous highlights
         if (previousFromHighlight != null) {
             this.getChildren().remove(previousFromHighlight);
@@ -205,6 +206,11 @@ public class ChessBoardUI extends GridPane {
             }
         }
     }
+    public void clearHighlights() {
+        // Rimuovi tutti i nodi di tipo Rectangle (gli highlight) dalla scacchiera
+        this.getChildren().removeIf(node -> node instanceof Rectangle);
+    }
+
 
     public void clearArrows() {
         GraphicsContext gc = arrowCanvas.getGraphicsContext2D();
@@ -259,7 +265,7 @@ public class ChessBoardUI extends GridPane {
     public void nextMove() {
         if (moveList != null && currentMoveIndex < moveList.size()) {
             String moveStr = moveList.get(currentMoveIndex);
-            Move move = parseMoveFromString(moveStr);
+            Move move = parseMoveFromString(moveStr, chessBoard.getFen());
             if (move != null) {
                 chessBoard.doMove(move);
                 updateBoard(chessBoard, move, pieceStyle);
@@ -276,14 +282,38 @@ public class ChessBoardUI extends GridPane {
         }
     }
 
-    private Move parseMoveFromString(String moveStr) {
-        if (moveStr.length() == 4) {
-            Square from = Square.valueOf(moveStr.substring(0, 2).toUpperCase());
-            Square to = Square.valueOf(moveStr.substring(2, 4).toUpperCase());
-            return new Move(from, to);
+    private Move parseMoveFromString(String moveStr, String fen) {
+        Square from = Square.valueOf(moveStr.substring(0, 2).toUpperCase());
+        Square to = Square.valueOf(moveStr.substring(2, 4).toUpperCase());
+
+        // Extract the side to move from the FEN string
+        boolean isWhiteToMove = fen.split(" ")[1].equals("w");
+
+        if (moveStr.length() == 5) { // Handle pawn promotion
+            char promotionChar = moveStr.charAt(4);
+            Piece promotionPiece = getPromotionPiece(promotionChar, isWhiteToMove);
+            return new Move(from, to, promotionPiece);
         }
-        return null;
+
+        return new Move(from, to);
     }
+
+    private Piece getPromotionPiece(char promotionChar, boolean isWhite) {
+        switch (Character.toLowerCase(promotionChar)) {
+            case 'q':
+                return isWhite ? Piece.WHITE_QUEEN : Piece.BLACK_QUEEN;
+            case 'r':
+                return isWhite ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+            case 'b':
+                return isWhite ? Piece.WHITE_BISHOP : Piece.BLACK_BISHOP;
+            case 'n':
+                return isWhite ? Piece.WHITE_KNIGHT : Piece.BLACK_KNIGHT;
+            default:
+                throw new IllegalArgumentException("Invalid promotion piece: " + promotionChar);
+        }
+    }
+
+
 
     private String getPieceFileName(Piece piece) {
         switch (piece) {
@@ -300,26 +330,6 @@ public class ChessBoardUI extends GridPane {
             case BLACK_QUEEN: return "bq.png";
             case BLACK_KING: return "bk.png";
             default: return null;
-        }
-    }
-
-    public static void main(String[] args) {
-        Application.launch(ChessBoardLauncher.class, args);
-    }
-
-
-
-    public static class ChessBoardLauncher extends Application {
-        @Override
-        public void start(Stage primaryStage) {
-            ChessBoardUI chessBoardUI = new ChessBoardUI("Legno.png", "Vetro");
-
-            // Draw two arrows with random coordinates
-
-            Scene scene = new Scene(chessBoardUI);
-            primaryStage.setTitle("ChessBoard UI");
-            primaryStage.setScene(scene);
-            primaryStage.show();
         }
     }
 

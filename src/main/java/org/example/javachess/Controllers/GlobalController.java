@@ -372,7 +372,7 @@ public class GlobalController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        legalmovesinput.setOnAction(event -> handleLegalMoves());
 
 
 
@@ -488,6 +488,60 @@ public class GlobalController {
     }
     @FXML
     private TextField legalmovesinput; // L'InputField nel tuo file FXML
+
+    @FXML
+    private void handleLegalMoves() {
+        String input = legalmovesinput.getText().trim();
+        chessBoard.clearHighlights();
+        System.out.println("Input: " + input);
+        String currentEval = evaluationLabel.getText();
+        System.out.println("Current Evaluation: " + currentEval);
+
+        if (input != null && !input.isEmpty()) {
+            try {
+                Square selectedSquare = Square.valueOf(input.toUpperCase());
+                Stockfish currentstockfish = pvpGame.getStockfish();
+                // Chiama la funzione di Stockfish per evidenziare le mosse legali
+
+                currentstockfish.highlightLegalMovesWithEvaluation(pvpGame.getBoard(), selectedSquare, chessBoard, getEvaluationFromLabel(pvpGame.getEvaluationLabel()));
+            } catch (IllegalArgumentException e) {
+                // Gestisci il caso in cui l'input non sia valido
+                System.out.println("Input non valido. Inserisci un quadrato valido, ad esempio 'e4'.");
+            }
+        }
+    }
+    public double getEvaluationFromLabel(String evalText) {
+        try {
+            // Controlla se la valutazione indica un matto
+            if (evalText.contains("#")) {
+                String[] parts = evalText.split(" ");
+                for (String part : parts) {
+                    if (part.startsWith("#")) {
+                        System.out.println("Mate string: " + part);
+                        int mateIn = Integer.parseInt(part.substring(1));
+                        System.out.println("Mate in: " + mateIn);
+                        return mateIn > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+                    }
+                }
+            } else {
+                // Valutazione numerica standard in centesimi di pedone
+                String[] parts = evalText.split(" ");
+                for (String part : parts) {
+                    if (part.matches("-?\\d+(\\.\\d+)?")) {
+                        System.out.println("Evaluation: " + part);
+                        return Double.parseDouble(part); // Prende la parte numerica
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Errore di formattazione: " + e.getMessage());
+            // Gestione dell'errore, ad esempio restituire un valore di default o lanciare un'eccezione
+            return 0.0;
+        }
+        // Se non si trova un valore valido, restituisci un valore di default
+        System.out.println("Nessuna valutazione trovata.");
+        return 0.0;
+    }
 
 
 
@@ -697,6 +751,7 @@ public class GlobalController {
             reviewEvalBar = null; // Helps with garbage collection
         }
 
+
         // Close Stockfish when exiting the review page
         if (stockfish != null) {
             stockfish.close();
@@ -722,8 +777,7 @@ public class GlobalController {
     private void updateReviewEvalBar() {
         if (reviewChessBoard != null && reviewEvalBar != null) {
             String currentFen = reviewChessBoard.getFen();
-            stockfish.evaluatePosition(currentFen, evalscorereview, reviewEvalBar);
-            stockfish.getTopThreeMoves(currentFen, move1labelreview, move2labelreview, move3labelreview, reviewChessBoard);
+            stockfish.getTopThreeMoves(currentFen, move1labelreview, move2labelreview, move3labelreview, reviewChessBoard, evalscorereview, reviewEvalBar);
         }
 
     }
