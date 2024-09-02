@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ChessBoardUI extends GridPane {
 
-    private static final int TILE_SIZE = 60;
+    private static final int TILE_SIZE = 85;
     private static final int BOARD_SIZE = 8;
     private final String chessboardStyle;
     private final String pieceStyle;
@@ -186,7 +186,7 @@ public class ChessBoardUI extends GridPane {
                 String pieceFileName = getPieceFileName(piece);
                 try (InputStream pieceImageStream = getClass().getResourceAsStream("/images/Pieces/" + pieceStyle + "/" + pieceFileName)) {
                     if (pieceImageStream == null) {
-                        throw new IllegalArgumentException("Image not found: /images/Pezzi/Vetro" + pieceFileName);
+                        throw new IllegalArgumentException("Image not found: /images/Pezzi/Vetro/" + pieceFileName);
                     }
                     ImageView pieceImageView = new ImageView(new Image(pieceImageStream));
                     pieceImageView.setFitHeight(TILE_SIZE);

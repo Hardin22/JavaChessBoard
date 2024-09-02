@@ -26,6 +26,8 @@ public class App extends Application {
             primaryStage.setScene(scene);
             scene.getStylesheets().add(App.class.getResource("/Styles/Style.css").toExternalForm());
             primaryStage.setTitle("Chess Application");
+            primaryStage.setFullScreen(true);
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

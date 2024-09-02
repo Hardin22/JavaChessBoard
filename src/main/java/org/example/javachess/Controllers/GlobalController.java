@@ -26,6 +26,8 @@ import java.nio.file.StandardCopyOption;
 
 
 import java.io.IOException;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GlobalController {
 
@@ -183,6 +185,13 @@ public class GlobalController {
 
     private String pieceStyle = "Legno";
     private String boardStyle = "Legno.png";
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Future<?> currentTask = null;
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> debounceHandle = null;
+    private final int DEBOUNCE_DELAY = 200; // in milliseconds
+    private AtomicBoolean isCalculating = new AtomicBoolean(false);
+
 
 
     @FXML
@@ -520,13 +529,15 @@ public class GlobalController {
                         System.out.println("Mate string: " + part);
                         int mateIn = Integer.parseInt(part.substring(1));
                         System.out.println("Mate in: " + mateIn);
-                        return mateIn > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+                        return mateIn > 0 ? 100.00 : -100.00;
                     }
                 }
             } else {
                 // Valutazione numerica standard in centesimi di pedone
                 String[] parts = evalText.split(" ");
                 for (String part : parts) {
+                    // Sostituisci la virgola con un punto per gestire i decimali
+                    part = part.replace(",", ".");
                     if (part.matches("-?\\d+(\\.\\d+)?")) {
                         System.out.println("Evaluation: " + part);
                         return Double.parseDouble(part); // Prende la parte numerica
@@ -542,6 +553,7 @@ public class GlobalController {
         System.out.println("Nessuna valutazione trovata.");
         return 0.0;
     }
+
 
 
 
@@ -728,7 +740,7 @@ public class GlobalController {
         reviewChessBoard.loadPgn(pgn);
 
         // Evaluate the current position and update the EvalBar
-        updateReviewEvalBar();
+        handleMoveUpdate();
     }
 
     @FXML
@@ -761,26 +773,56 @@ public class GlobalController {
     @FXML
     private void previousMove() {
         if (reviewChessBoard != null) {
+            reviewChessBoard.clearArrows();
             reviewChessBoard.previousMove();
-            updateReviewEvalBar(); // Update the EvalBar after moving
+            handleMoveUpdate(); // Update the EvalBar after moving
         }
     }
 
     @FXML
     private void nextMove() {
         if (reviewChessBoard != null) {
+            reviewChessBoard.clearArrows();
             reviewChessBoard.nextMove();
-            updateReviewEvalBar(); // Update the EvalBar after moving
+            handleMoveUpdate(); // Update the EvalBar after moving
         }
     }
 
-    private void updateReviewEvalBar() {
-        if (reviewChessBoard != null && reviewEvalBar != null) {
-            String currentFen = reviewChessBoard.getFen();
-            stockfish.getTopThreeMoves(currentFen, move1labelreview, move2labelreview, move3labelreview, reviewChessBoard, evalscorereview, reviewEvalBar);
+    private void handleMoveUpdate() {
+        if (debounceHandle != null && !debounceHandle.isDone()) {
+            debounceHandle.cancel(false);
         }
 
+        debounceHandle = scheduler.schedule(() -> {
+            if (reviewChessBoard != null && reviewEvalBar != null) {
+                String currentFen = reviewChessBoard.getFen();
+
+                // Cancel any ongoing Stockfish calculation
+                if (currentTask != null && !currentTask.isDone()) {
+                    currentTask.cancel(true);
+                    stockfish.stopCalculating();  // Stop the previous calculation
+                    isCalculating.set(false);
+                }
+
+                // Start a new Stockfish calculation for the updated position
+                currentTask = executorService.submit(() -> {
+                    isCalculating.set(true);
+                    stockfish.getTopThreeMoves(currentFen, move1labelreview, move2labelreview, move3labelreview, reviewChessBoard, evalscorereview, reviewEvalBar);
+                    isCalculating.set(false);
+                });
+            }
+        }, DEBOUNCE_DELAY, TimeUnit.MILLISECONDS);
     }
+
+    public void shutdown() {
+        if (currentTask != null && !currentTask.isDone()) {
+            currentTask.cancel(true);
+            stockfish.stopCalculating();
+        }
+        executorService.shutdown();
+        scheduler.shutdown();
+    }
+
     @FXML
     private void showThemepage(){
         themeSelection.setVisible(true);

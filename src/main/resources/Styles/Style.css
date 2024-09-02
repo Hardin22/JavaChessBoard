@@ -68,7 +68,7 @@
 .stopwatch {
     -fx-font-family: 'Poppins';
     -fx-font-weight: bold;
-    -fx-font-size: 30px;
+    -fx-font-size: 40px;
     -fx-text-fill: rgba(255, 255, 255, 0.7);
     -fx-background-radius: 15px;
     -fx-background-color: #333333;
@@ -156,10 +156,17 @@
 }
 .indietro{
     -fx-text-fill: white;
-    -fx-pref-height: 50px;
-    -fx-pref-width: 130px;
+    -fx-pref-height: 70px;
+    -fx-pref-width: 170px;
 }
 .boards {
     -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 40, 0.0, 0, 0); /* White color with 50% opacity, blur radius 10 */
 }
+.homebuttons{
+    -fx-pref-width: 600px;
+    -fx-pref-height: 150px;
+}
 
+.boardbuttons{
+    -fx-pref-width: 260px;
+}

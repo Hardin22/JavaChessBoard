@@ -220,8 +220,8 @@ public class PvcGame {
 
     private void endGameWithMessage(String message) {
         System.out.println(message);
-        evaluationLabel.setText("");
-        move1Label.setText(message);
+        evaluationLabel.setText(message);
+        move1Label.setText("");
         move2Label.setText("");
         move3Label.setText("");
         saveGameToJson(message);
