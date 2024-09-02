@@ -226,5 +226,113 @@
         "datetime": "27-08-2024 04:37",
         "pgn": "g1f3 c7c5 e2e3 d7d5 d2d4 g8f6 d4c5 e7e6 b2b4 a7a5 f1b5 c8d7 b5d7 f6d7 c2c3 a5b4 c3b4 d8f6 d1d4 b7b6 c5b6 f6d4 f3d4 f8b4 c1d2 b4d2 e1d2 d7b6 a2a3 a8a6 b1c3 e8e7 d2e2 h8c8 h1c1 b8d7 f2f3 e7f8 h2h4 h7h5 d4b5 a6a5 b5d6 c8b8 c3b5 f8e7 c1c6 b6c4 d6c4 d5c4 b5d6 d7e5 c6b6 b8b6 d6c8 e7d7 c8b6 d7c6 f3f4 c6b6 f4e5 a5e5 a1d1 e5a5 d1d4 b6c5 g2g4 a5a3 g4h5 a3a2 e2f1 c4c3 d4d8 c3c2 d8c8 c5d5 c8c7 d5d6 c7c3 a2a1 f1f2 c2c1q c3c1 a1c1 f2e2 d6d5 e2d3 c1c4 d3e2 d5e4 h5h6 g7h6 e2d2 e6e5 d2e2 c4c2 e2d1 e4d3 d1e1 d3e3 e1d1 c2c4 d1e1 c4c1  Scaccomatto! Vince il Nero.",
         "id": 47
+    },
+    {
+        "result": "Partita interrotta.",
+        "datetime": "31-08-2024 23:21",
+        "pgn": "1. e2e4 2. c7c5  Partita interrotta.",
+        "id": 48
+    },
+    {
+        "result": "Scaccomatto! Vince il Nero.",
+        "datetime": "31-08-2024 23:51",
+        "pgn": "e2e3 d7d5 g1f3 g8f6 c2c4 e7e6 b1c3 c7c5 c4d5 e6d5 a2a3 d5d4 c3b5 a7a6 d1a4 b8c6 f1e2 c8d7 e1g1 a6b5 a4b5 f8d6 e3d4 c5d4 b5b7 c6a5 b7b4 d6b4 f1e1 a5c6 e2a6 b4e7 a6b5 a8b8 b5e2 d4d3 b2b4 d3e2 b4b5 b8b5 d2d4 d7g4 c1d2 g4f3 a3a4 b5b2 a4a5 d8d4 e1e2 d4g4 g2g3 g4h3 e2e7 c6e7 d2e1 h3g2  Scaccomatto! Vince il Nero.",
+        "id": 49
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "01-09-2024 00:39",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6  Il Nero vince per tempo",
+        "id": 50
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "01-09-2024 05:31",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6  Il Nero vince per tempo",
+        "id": 51
+    },
+    {
+        "result": "Il Bianco vince per tempo",
+        "datetime": "01-09-2024 06:09",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. f1c4 g8f6 4. b1a3  Il Bianco vince per tempo",
+        "id": 52
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "01-09-2024 06:58",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6  Il Nero vince per tempo",
+        "id": 53
+    },
+    {
+        "result": "Il Bianco vince per tempo",
+        "datetime": "01-09-2024 15:29",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. b1a3 f8a3 4. f3e5 c6b4 5. f1c4 a7a6 6. d1h5  Il Bianco vince per tempo",
+        "id": 54
+    },
+    {
+        "result": "Il Bianco vince per tempo",
+        "datetime": "01-09-2024 16:21",
+        "pgn": "1. e2e4 e7e5 2. d1h5 a7a6 3. f1c4  Il Bianco vince per tempo",
+        "id": 55
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "01-09-2024 16:22",
+        "pgn": "1. e2e4 e7e5 2. d1h5 a7a6 3. f1c4  Il Bianco vince per tempo Partita interrotta",
+        "id": 55
+    },
+    {
+        "result": "Il Bianco vince per tempo",
+        "datetime": "01-09-2024 16:37",
+        "pgn": "1. e2e4 e7e5 2. a2a3 d8h4 3. a3a4 f8c5 4. a4a5  Il Bianco vince per tempo",
+        "id": 56
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "01-09-2024 17:13",
+        "pgn": "1. e2e4 e7e5 2. a2a3 d8h4 3. a3a4 f8c5 4. a4a5  Il Bianco vince per tempo Partita interrotta",
+        "id": 56
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "01-09-2024 17:23",
+        "pgn": "1. e2e4 e7e5 2. d1h5 a7a6 3. f1c4  Partita interrotta",
+        "id": 57
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "01-09-2024 17:50",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. f1c4 f8c5 4. f3e5 c6e5 5. d1h5 e5c6  Il Nero vince per tempo",
+        "id": 58
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "01-09-2024 18:11",
+        "pgn": "1. e2e4 e7e5 2. g1f3 b8c6 3. f1c4 f8c5 4. f3e5 c6e5 5. d1h5 e5c6  Il Nero vince per tempo",
+        "id": 59
+    },
+    {
+        "result": "Scaccomatto! Vince il Nero.",
+        "datetime": "01-09-2024 19:54",
+        "pgn": "1. e2e4 e7e5 2. d1h5 a7a6 3. f1c4 a6a5 4. h5h7 h8h7 5. a2a3 d8h4 6. a3a4 f8c5 7. c4f7 e8f7 8. a1a2 h4f2 9. e1d1 f2f1  Scaccomatto! Vince il Nero.",
+        "id": 60
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "01-09-2024 21:36",
+        "pgn": "1. e2e4 e7e5 2. d1h5 a7a6 3. f1c4 a6a5  Partita interrotta",
+        "id": 61
+    },
+    {
+        "result": "Partita interrotta",
+        "datetime": "01-09-2024 22:39",
+        "pgn": "1. e2e4 e7e5 2. f2f4 e5f4 3. d2d4 d7d5 4. b1c3 d5e4 5. c1f4 g8f6 6. f1c4 f8b4  Partita interrotta",
+        "id": 62
+    },
+    {
+        "result": "Il Nero vince per tempo",
+        "datetime": "02-09-2024 00:49",
+        "pgn": "1. e2e4 e7e5 2. f2f4 e5f4 3. d2d4 d7d5 4. b1c3 d5e4 5. c1f4 g8f6 6. f1c4 f8b4  Il Nero vince per tempo",
+        "id": 63
     }
 ]

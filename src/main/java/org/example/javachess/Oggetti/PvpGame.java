@@ -11,7 +11,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import org.example.javachess.Utils.SerialListener;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.example.javachess.Utils.SerialListener;
 import java.util.List;
 
 public class PvpGame {
@@ -41,6 +42,7 @@ public class PvpGame {
     private int gameId;
     private Path archivePath;
     private boolean saveGame= true;
+    //SerialListener serialListener = new SerialListener("/dev/cu.usbmodem2101", this);
 
     public PvpGame(ChessBoardUI chessBoardUI, Label evaluationLabel, EvalBar evalBar, Label move1Label, Label move2Label, Label move3Label, Label whiteLabel, Label blackLabel, int gameDuration, int increment) {
         this.board = new Board();
@@ -69,7 +71,11 @@ public class PvpGame {
         move3Label.setText("");
         Platform.runLater(() -> chessTimer.startWhiteTimer());
         pgn.setLength(0); // Resetta la stringa PGN per la nuova partita
+
+        //serialListener.startListening();
         evaluatePositionAndMoves();
+
+
     }
 
     public Stockfish getStockfish(){
@@ -245,9 +251,11 @@ public class PvpGame {
         }
 
         // Aggiorna le etichette con il messaggio di fine partita
-        move1Label.setText(endMessage);
+        evaluationLabel.setText(endMessage);
+        move1Label.setText("");
         move2Label.setText("");
         move3Label.setText("");
+        //serialListener.closeConnection();
     }
 
     private void saveGameToJson(String result) {
